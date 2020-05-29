@@ -18,6 +18,7 @@ class ImportDataByWordService{
         $dataFile = 'word/document.xml';
         // Open received archive file
         if (true === $zip->open($filePath)) {
+            
             if (($index = $zip->locateName($dataFile)) !== false) {
                 $data = $zip->getFromIndex($index);
                 $zip->close();
@@ -35,13 +36,14 @@ class ImportDataByWordService{
                 $striped_content = trim($striped_content);
 
                 $arr_data = explode("#q#", $striped_content);
-
+               
                 $arr_exam_detail = [];
 
                 foreach ($arr_data as $data) {
                     
                     if (!empty($data)) {
                         $arr_question = explode("#a#", $data);
+
                         $question_title = $arr_question[0];
 
                         $question = new Question();
@@ -51,16 +53,17 @@ class ImportDataByWordService{
                         $question->save();
 
                         $question_id = $question->max('id');
-
+                      
                         $str_answers = strstr($data, "#a#");
                         $arr_answers = explode("#a#", $str_answers);
 
                         foreach ($arr_answers as $val) {
                             if (!empty($val)) {
-                                $val = trim($val);
+                                // $val = trim($val);
                                 $answer = new Answer();
 
                                 if (substr($val,0, 1) === '*') {
+                                    $val = trim($val);
                                     $answer_title = substr($val,1);
                                     $answer->title = trim($answer_title);
                                     $answer->question_id = $question_id;
@@ -87,6 +90,8 @@ class ImportDataByWordService{
                 }
                 ExamDetail::insert($arr_exam_detail);
             }
+            
         }
+       
     }
 }

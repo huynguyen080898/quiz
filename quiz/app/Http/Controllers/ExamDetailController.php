@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Models\Quiz;
-use App\Models\Question;
+use App\Models\ExamDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class QuizController extends Controller
+class ExamDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        $quizzes = Quiz::all();
-        return view('admin.quiz.index', compact('quizzes'));
+        
     }
 
     /**
@@ -27,11 +25,9 @@ class QuizController extends Controller
      */
     public function create()
     {
-        return view('admin.quiz.create');
+        //
     }
-    // SELECT 'quiz_id', count('id') as 'total_question'
-    // FROM `questions`
-    // group by 'quiz_id','total_question'
+
     /**
      * Store a newly created resource in storage.
      *
@@ -40,15 +36,7 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255',
-        ],[
-            'title.required' => 'Tên danh mục không được trống',
-        ]);
-
-        Quiz::create($request->all());
-
-        return redirect()->route('quiz.create')->with('messages', 'Thêm thành công');
+        //
     }
 
     /**
@@ -59,7 +47,14 @@ class QuizController extends Controller
      */
     public function show($id)
     {
-        //
+        $exam_detail = ExamDetail::where('exam_id',$id)
+                                    ->join('questions', 'exam_details.question_id', '=', 'questions.id')
+                                    ->join('answers','questions.id','=', 'answers.question_id')
+                                    ->select('exam_details.*', 'questions.title as question_title')
+                                    ->get();
+        // dd($exam_detail);
+        return view('admin.exam.detail', compact('exam_detail'));
+      
     }
 
     /**
@@ -70,8 +65,7 @@ class QuizController extends Controller
      */
     public function edit($id)
     {
-        $quiz = Quiz::find($id);
-        return view('admin.quiz.edit', compact('quiz'));
+        //
     }
 
     /**
@@ -83,15 +77,7 @@ class QuizController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|max:255',
-        ],[
-            'title.required' => 'Tên danh mục không được trống',
-        ]);
-
-        $quiz = Quiz::find($id);
-        $quiz->update($request->all());
-        return redirect()->route('quiz.index')->with('messages', 'Lưu thành công');
+        //
     }
 
     /**
@@ -102,8 +88,6 @@ class QuizController extends Controller
      */
     public function destroy($id)
     {
-        $quiz = Quiz::find($id);
-        $quiz->delete();
-        return back()->with('messages', 'Xóa thành công');
+        //
     }
 }

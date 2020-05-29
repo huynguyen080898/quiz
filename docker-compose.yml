@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   db:
-    container_name: mysql
+    container_name: mysql_quiz
     image: mysql:5.7
     restart: always
     ports:
@@ -12,13 +12,14 @@ services:
       MYSQL_DATABASE: quiz
 
   adminer:
+    container_name: adminer_quiz
     image: adminer
     restart: always
     ports:
       - 8080:8080
       
   nginx:
-    container_name: nginx
+    container_name: nginx_quiz
     build: images/nginx
     command: nginx -g "daemon off;"
     volumes:
@@ -31,7 +32,7 @@ services:
       - db
 
   php:
-    container_name: php
+    container_name: php_quiz
     build: images/php
     volumes:
       - ./quiz:/var/www/html

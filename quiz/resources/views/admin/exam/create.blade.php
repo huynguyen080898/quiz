@@ -7,9 +7,9 @@
 
 @section('content')
 
-@include('admin.notification.messages')
+@include('notification.messages')
 
-@include('admin.notification.errors')
+@include('notification.errors')
 
 <div class="container">
     <h3 style="text-align: center; color: red; font-weight: bold">Exam</h3>
@@ -21,7 +21,7 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text">Quiz</label>
                 </div>
-                <select class="custom-select" onchange="myFunction()" id="quizID" name="quiz_id">
+                <select class="custom-select" name="quiz_id">
                     @foreach ($quizzes as $quiz)
                     <option value="{{$quiz->id}} "> {{ $quiz->title }} </option>
                     @endforeach
@@ -97,31 +97,6 @@ function enableFileTab() {
 function enableTableTab() {
     $("#importByFile :input").attr("disabled", true);
     $("#importByTable :input").attr("disabled", false);
-}
-</script>
-<script type="text/javascript">
-$(document).ready(myFunction);
-
-function myFunction() {
-    const e = document.getElementById("quizID");
-    const quiz_id = e.options[e.selectedIndex].value;
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-    });
-    $.ajax({
-        url: "{{ url('admin/question/count') }}",
-        method: 'get',
-        data: {
-            quiz_id: quiz_id,
-        },
-        datatype: "json"
-    }).done(function(data){
-        console.log(data);
-    }).fail(function(jqXHR, ajaxOptions, thrownError) {
-        alert('No response from server');
-    });;
 }
 </script>
 @stop

@@ -1,0 +1,8 @@
+<div class="questionsRow">
+
+    @if(!$value->current_page() > 1)
+    <a href="{!!$value->prev_page_url()!!}" class="button btn btn-secondary" id="skipquestions">Back</a>
+    @endif
+    <a href="{!!$value->next_page_url()!!}" class="button btn btn-primary" id="nextquestions">Next</a>
+    <span>{!!$value->current_page()!!} of {!!$value->count()!!}</span>
+</div>

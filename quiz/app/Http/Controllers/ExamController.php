@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Exam;
 use App\Models\Quiz;
 use App\Models\Question;
+use App\Models\ExamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -21,7 +23,8 @@ class ExamController extends Controller
      */
     public function index()
     {
-        $exams = Exam::all();
+        $exams = Exam::join('quizzes', 'exams.quiz_id','=','quizzes.id')->select('exams.*','quizzes.title as quiz_title')->get();
+        // dd($exams);
         return view('admin.exam.index', compact('exams'));
     }
 
@@ -62,12 +65,28 @@ class ExamController extends Controller
                 'time.required' => 'Ban chua nhap thoi gian thi',
                 'time.numeric' => 'thoi gian thi phai la so'
             ]);
+
+            if($request->start_date == null){
+                $request->merge([
+                    'start_date' => Carbon::now()
+                ]);
+            }
+
             $exam = Exam::create($request->all());
             $exam_id = $exam->max('id');
             $quiz_id = $request->quiz_id;
             // $quiz_id = 1;
             if($request->hasFile('fileImport')){
+
+                $request->validate([
+                    'fileImport'=>'required|mimes:docx',
+                ],[
+                    'fileImport.required' => 'Ban chua chon file',
+                    'fileImport.mimes' => 'File khong dung dinh dang',
+                ]);
+
                 $file = $request->file('fileImport');
+
                 $extension = $file->getClientOriginalExtension();
     
 				if($extension == 'docx'){
@@ -76,15 +95,16 @@ class ExamController extends Controller
                 else{
                     Excel::import(new ImportDataByExcelService($quiz_id,$exam_id), $file);
                 }
+                DB::commit();
+                return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
             }
-
-            DB::commit();
+            // return redirect()->route('exam.create')->with('messages', 'err');
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
 
-        return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
+       
     }
 
     /**
@@ -97,7 +117,7 @@ class ExamController extends Controller
     {
         //
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -129,6 +149,13 @@ class ExamController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $exam = Exam::find($id);
+        $exam->delete();
+        return back()->with('messages', 'Xóa thành công');
+    }
+
+    public function getExampleByQuizId($id){
+        $exams = Exam::where('quiz_id',$id)->get();
+        return view('home.exam',compact('exams'));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -83,14 +83,15 @@ class QuestionController extends Controller
         //
     }
 
-    public function count(Request $request){
-        $result =[
-            'data' =>[
-                'quiz_id'=>$request->quiz_id,
-                'total_question' => 10
-            ]
-        ];
-        //  $request->quiz_id;
-        return response()->json($result);
+    public function count(Request $request)
+    {
+        // $result =[
+        //     'data' =>[
+        //         'quiz_id'=>$request->quiz_id,
+        //         'total_question' => 10
+        //     ]
+        // ];
+        
+        // return Response($result);
     }
 }

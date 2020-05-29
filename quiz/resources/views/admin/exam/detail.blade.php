@@ -10,34 +10,34 @@
 
 @include('notification.errors')
 
-    <h3 style="text-align: center">Danh sách Quizzes</h3>
+    <h3 style="text-align: center">chi tiet de thi</h3>
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <a href="{{ route('quiz.create') }}" class="btn btn-success float-right">Add Quiz</a>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Tên</th>
-                            <th>Chỉnh sửa</th>
+                            <th>cau hoi</th>
+                            <th>diem</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php
                         $i = 1;
                         @endphp
-                        @foreach ($quizzes as $quiz)
+                        @foreach ($exam_detail as $value)
                         <tr>
                             <th> {{ $i++ }} </th>
-                            <td> {{ $quiz->title }} </td>
-                            <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
+                            <td> {{ $value->question_title }} </td>
+                            <td> {{ $value->score }} </td>
+                            <td><a href="{{ route('exam.edit', $value->id) }}" class="btn btn-info btn-circle"><i
                                         class="fa fas fa-edit"></i></a>
-                                <a href="{{ route('quiz.delete', $quiz->id) }}"
+                                <a href="{{ route('exam.detail.delete', $value->id) }}"
                                     onclick="return confirm('Bạn có thật sự muốn xóa?')"
-                                    class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
+                                    class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+
 @stop
 @section('scripts')
   <!-- Page level plugins -->

@@ -16,11 +16,9 @@
         </div>
     </div>
     <div id="importByTable" class="container tab-pane fade"><br>
-        
-        
+        TEST
         <div class="form-group">
             <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." disabled="disabled">
         </div>
-      
     </div>
 </div>

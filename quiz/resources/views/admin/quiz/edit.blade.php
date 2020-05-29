@@ -2,9 +2,9 @@
 
 @section('content')
 
-@include('admin.notification.messages')
+@include('notification.messages')
 
-@include('admin.notification.errors')
+@include('notification.errors')
 <div class="container">
     <h3 style="text-align: center; color: red; font-weight: bold">Quiz</h3>
     @include('admin.notification.messages')

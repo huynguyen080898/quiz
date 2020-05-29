@@ -6,10 +6,10 @@
 
 @section('content')
 
-@include('admin.notification.messages')
+@include('notification.messages')
 
-@include('admin.notification.errors')
-<div class="container">
+@include('notification.errors')
+
     <h3 style="text-align: center">Danh sách Exam</h3>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -27,6 +27,7 @@
                             <th>ngay bat dau</th>
                             <th>Ngay ket thuc</th>
                             <th>trang thai</th>
+                            <th>Xem chi tiet</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -39,11 +40,18 @@
                             <th> {{ $i++ }} </th>
                             <td> {{ $exam->title }} </td>
                             <td> {{ $exam->quiz_title }} </td>
-                            <td><a href="{{ route('exam.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
+                            <td> {{ $exam->time }} (phut)</td>
+                            <td> {{ $exam->start_date}}</td>
+                            <td> {{ $exam->end_date}}</td>
+                            <td> {{ $exam->status }}</td>
+                            <td><a href="{{route('exam.detail', $exam->id)}}">xem chi tiet</a></td>
+                            <td><a href="{{ route('exam.edit', $exam->id) }}" class="btn btn-info btn-circle"><i
                                         class="fa fas fa-edit"></i></a>
-                                <a href="{{ route('exam.delete', $quiz->id) }}"
+                                <a href="{{ route('exam.delete', $exam->id) }}"
                                     onclick="return confirm('Bạn có thật sự muốn xóa?')"
-                                    class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
+                                    class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a>
+                            </td>
+                          
                         </tr>
                         @endforeach
                     </tbody>
@@ -51,7 +59,7 @@
             </div>
         </div>
     </div>
-</div>
+
 @stop
 @section('scripts')
   <!-- Page level plugins -->
