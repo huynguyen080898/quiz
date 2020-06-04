@@ -10,6 +10,7 @@ use App\Models\ExamDetail;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -35,8 +36,8 @@ class HomeController extends Controller
        
         $answers = Answer::where('question_id', $question_id)->get();
         
-        $user_id = 17;//Change
-
+        $user_id = Auth::user()->id;//Change
+        
         Result::firstOrCreate(
             ['user_id' => $user_id,'exam_id' => $exam_id],
             ['total_question' => $exam_detail->total()]
@@ -71,5 +72,18 @@ class HomeController extends Controller
         return view('home.login');
     }
     
+    public function getRegister(){
+        return view('home.register');
+    }
+
+    public function postRegister(){
+        
+    }
+
+    public function getLogout()
+    {
+        Auth::logout();
+        return redirect()->route('home.index');
+    }
     
 }

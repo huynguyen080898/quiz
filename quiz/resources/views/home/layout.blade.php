@@ -21,12 +21,13 @@
     @yield('styles')
     <style>
     body {
-        margin:0;
-        padding:0
+        margin: 0;
+        padding: 0
     }
     </style>
 </head>
- <!-- style="overflow-x: hidden;" -->
+<!-- style="overflow-x: hidden;" -->
+
 <body>
     <div class="container-fluid">
         <header class="blog-header py-3">
@@ -46,8 +47,30 @@
                             <line x1="21" y1="21" x2="15.8" y2="15.8"></line>
                         </svg>
                     </a>
-                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login.index') }}">Login</a>
-                    <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+                    @if(Auth::check())
+                    <ul class="nav page-navigation">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" data-toggle="dropdown" id="navbarDropdown" href="#">
+                                Xin Chào: {{Auth::user()->name}}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
+                                aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    Test History
+                                </a>
+                                <a class="dropdown-item" href="{{route('logout')}}">
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    @else
+                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login') }}">Login</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{route('register')}}">Sign up</a>
+                    @endif
                 </div>
             </div>
         </header>
@@ -56,13 +79,14 @@
             <div class="nav-scroller">
                 <nav class="nav d-flex justify-content-between">
                     @foreach($quizzes as $quiz)
-                        <a class="p-2 text-muted" href="{{route('quiz.exam', $quiz->id)}}"><span class="font-weight-bold">{{ $quiz->title }}</span></a>
+                    <a class="p-2 text-muted" href="{{route('quiz.exam', $quiz->id)}}"><span
+                            class="font-weight-bold">{{ $quiz->title }}</span></a>
                     @endforeach
                 </nav>
             </div>
             <hr class="border border-primary rounded-circle ">
         </div>
-        
+
     </div>
     <div class="container py-3" style="min-height:700px">
         @yield('content')
@@ -84,7 +108,7 @@
     <script src="vendor/popper.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="vendor/holder.min.js"></script>
-   
+
     <script>
     Holder.addTheme('thumb', {
         bg: '#55595c',
@@ -92,7 +116,7 @@
         text: 'Thumbnail'
     });
     </script>
-     @yield('scripts')
+    @yield('scripts')
 </body>
 
 </html>

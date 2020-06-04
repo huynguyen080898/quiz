@@ -7,6 +7,7 @@ use App\Models\ExamDetail;
 use App\Models\UserAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class UserAnswerController extends Controller
 {
@@ -19,7 +20,7 @@ class UserAnswerController extends Controller
 
         $checkAnswer = ExamDetail::where([['question_id',$question_id],['exam_id',$exam_id],['answer_id',$user_answer_id]])->exists();
         $correct = false;
-        $user_id = 14; // change
+        $user_id = Auth::user()->id; // change
 
         if($correct){
             $correct = true;

@@ -67,18 +67,25 @@ Route::group(['prefix' => 'question'], function ()
     //     Route::get('destroy/{id}', 'Admin\AnswerController@destroy')->name('answer.destroy');
     // });
 
+Route::group(['middleware' => 'auth.user'], function()
+{
+    Route::get('quiz/{id}/exam','ExamController@getExampleByQuizId')->name('quiz.exam');
+
+    Route::get('quiz-start/{id}','HomeController@getExamDetail')->name('quiz.start');
+
+    Route::put('user-answer','UserAnswerController@putUserAnswer')->name('user.answer');
+
+    Route::get('result','ResultController@index')->name('result.index');
+});
 
 Route::get('/', 'HomeController@index')->name('home.index');
 
-Route::get('quiz/{id}/exam','ExamController@getExampleByQuizId')->name('quiz.exam');
+Route::get('login','HomeController@getLogin')->name('login');
+Route::get('logout','HomeController@getLogout')->name('logout');
+Route::get('register','HomeController@getRegister')->name('register');
 
-Route::get('quiz-start/{id}','HomeController@getExamDetail')->name('quiz.start');
+// Route::post('register','Auth\RegisterController@g')->name('register');
+Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
 
-Route::put('user-answer','UserAnswerController@putUserAnswer')->name('user.answer');
-
-Route::get('result','ResultController@index')->name('result.index');
-
-Route::get('login','HomeController@getLogin')->name('login.index');
-
-Route::get('/redirect/{social}', 'SocialAuthController@redirect');
-Route::get('/callback/{social}', 'SocialAuthController@callback');
+Route::get('/redirect/{social}', 'Auth\SocialAuthController@redirect');
+Route::get('/callback/{social}', 'Auth\SocialAuthController@callback');
