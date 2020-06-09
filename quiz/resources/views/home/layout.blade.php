@@ -68,8 +68,8 @@
                         </li>
                     </ul>
                     @else
-                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login') }}">Login</a>
-                    <a class="btn btn-sm btn-outline-secondary" href="{{route('register')}}">Sign up</a>
+                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login.get') }}">Login</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{route('register.get')}}">Sign up</a>
                     @endif
                 </div>
             </div>

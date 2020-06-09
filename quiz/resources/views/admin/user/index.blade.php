@@ -10,19 +10,19 @@
 
 @include('notification.errors')
 
-<h3 style="text-align: center">Danh sách Quizzes</h3>
+<h3 style="text-align: center">Danh sách người dùng</h3>
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <!-- <div class="card-header py-3">
         <a href="{{ route('quiz.create') }}" class="btn btn-success float-right">Add Quiz</a>
-    </div>
+    </div> -->
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Tên</th>
-                        <th>Hinh ảnh</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -30,15 +30,11 @@
                     @php
                     $i = 1;
                     @endphp
-                    @foreach ($quizzes as $quiz)
+                    @foreach ($users as $user)
                     <tr>
                         <th> {{ $i++ }} </th>
-                        <td> {{ $quiz->title }} </td>
-                        <td>
-                            <a href="{{$quiz->image_url}}">
-                                <image src="{{ $quiz->image_url}}" width="200" height="100px"></image>
-                            </a>
-                        </td>
+                        <td> {{ $user->name }} </td>
+                        <td> {{$user->email}}  </td>
                         <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
                                     class="fa fas fa-edit"></i></a>
                             <a href="{{ route('quiz.delete', $quiz->id) }}"

@@ -1,9 +1,11 @@
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" onclick="enableFileTab()" href="#importByFile">them cau hoi tu file</a>
+        <a class="nav-link active" data-toggle="tab" onclick="enableFileTab()" href="#importByFile">Thêm câu hỏi từ
+            file</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" onclick="enableTableTab()" href="#importByTable">them cau hoi tu ngan hang cau hoi</a>
+        <a class="nav-link" data-toggle="tab" onclick="enableTableTab()" href="#importByTable">Thêm câu hỏi từ ngân hàng
+            câu hỏi</a>
     </li>
 </ul>
 
@@ -16,9 +18,6 @@
         </div>
     </div>
     <div id="importByTable" class="container tab-pane fade"><br>
-        TEST
-        <div class="form-group">
-            <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." disabled="disabled">
-        </div>
+        
     </div>
 </div>

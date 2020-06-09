@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Quiz;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class QuestionController extends Controller
 {
@@ -14,7 +16,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        
+        $questions = Question::all();
+
+        return view('admin.question.index',compact('questions'));
     }
 
     /**
@@ -24,7 +28,8 @@ class QuestionController extends Controller
      */
     public function create()
     {
-        return view('admin.question.create');
+        $quizzes = Quiz::all();
+        return view('admin.question.create',compact('quizzes'));
     }
 
     /**
@@ -35,7 +40,8 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        
+        Question::create($request->all());
+        return redirect()->route('question.create')->with('messages', 'Thêm thành công');
     }
 
     /**

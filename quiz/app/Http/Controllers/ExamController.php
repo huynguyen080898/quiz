@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\ImportDataByWordService;
 use App\Services\ImportDataByExcelService;
+use App\Services\ImportDataByDatabaseService;
 
 class ExamController extends Controller
 {
@@ -52,9 +53,10 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+       
         DB::beginTransaction();
         try {
+            
             $request->validate([
                 'quiz_id'=>'required',
                 'title' => 'required|max:255',
@@ -75,11 +77,11 @@ class ExamController extends Controller
             $exam = Exam::create($request->all());
             $exam_id = $exam->max('id');
             $quiz_id = $request->quiz_id;
-            // $quiz_id = 1;
+            
             if($request->hasFile('fileImport')){
 
                 $request->validate([
-                    'fileImport'=>'required|mimes:docx',
+                    'fileImport'=>'required|mimes:docx,xlsx,csv,tsv,ods,xls,slk,xml,html,gnumeric',
                 ],[
                     'fileImport.required' => 'Ban chua chon file',
                     'fileImport.mimes' => 'File khong dung dinh dang',
@@ -95,10 +97,15 @@ class ExamController extends Controller
                 else{
                     Excel::import(new ImportDataByExcelService($quiz_id,$exam_id), $file);
                 }
+
                 DB::commit();
                 return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
             }
-            // return redirect()->route('exam.create')->with('messages', 'err');
+            
+            ImportDataByDatabaseService::importData($exam_id, $request);
+            DB::commit();
+            return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
+            
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());

@@ -9,6 +9,6 @@ class Quiz extends Model
     protected $table = 'quizzes';
 
     protected $fillable = [
-        'title'
+        'title','image_url'
     ];
 }

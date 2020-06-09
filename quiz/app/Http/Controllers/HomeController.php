@@ -68,19 +68,7 @@ class HomeController extends Controller
     }
 
 
-    public function getLogin(){
-        return view('home.login');
-    }
-    
-    public function getRegister(){
-        return view('home.register');
-    }
-
-    public function postRegister(){
-        
-    }
-
-    public function getLogout()
+    public function logout()
     {
         Auth::logout();
         return redirect()->route('home.index');

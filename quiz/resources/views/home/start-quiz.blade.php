@@ -181,7 +181,7 @@ function getData(page) {
     }).done(function(data) {
         $("#ajax-container").empty().html(data);
 
-        var totalPages = {{$exam_detail -> total()}};
+        var totalPages = "{{$exam_detail -> total()}}";
         if (page == totalPages) {
             document.getElementById("btnResult").href = "{{route('result.index',['result_id'=>$result->id])}}";
         }

@@ -49,19 +49,27 @@ class ImportDataByWordService{
                         $question = new Question();
                         $question->title = $question_title;
                         $question->quiz_id = $quiz_id;
-                        $question->type = 'multi_choice';
+                        $question->question_type = 'text';
+                        $question->answer_type = 'single_select';
                         $question->save();
 
                         $question_id = $question->max('id');
                       
                         $str_answers = strstr($data, "#a#");
                         $arr_answers = explode("#a#", $str_answers);
+                        $arr_answers = array_filter($arr_answers, 'strlen');
+                        
+                        if(count($arr_answers) == 1){
+                            Question::where('id',$question_id)->update(['answer_type'=>'fill_text']);
+                        }
+
+                        $total_true_answer = 0;
 
                         foreach ($arr_answers as $val) {
                             if (!empty($val)) {
-                                // $val = trim($val);
+                                
                                 $answer = new Answer();
-
+                                
                                 if (substr($val,0, 1) === '*') {
                                     $val = trim($val);
                                     $answer_title = substr($val,1);
@@ -77,7 +85,9 @@ class ImportDataByWordService{
                                         'question_id' => $question_id,
                                         'answer_id' => $answer_id
                                     ]);
-            
+
+                                    $total_true_answer += 1;
+                                    
                                     continue;
                                 }
 
@@ -86,6 +96,11 @@ class ImportDataByWordService{
                                 $answer->save();
                             }
                         }
+
+                        if($total_true_answer > 1){
+                            Question::where('id',$question_id)->update(['answer_type'=>'multi_select']);
+                        }
+                      
                     }
                 }
                 ExamDetail::insert($arr_exam_detail);

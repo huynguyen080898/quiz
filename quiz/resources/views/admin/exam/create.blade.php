@@ -12,7 +12,7 @@
 @include('notification.errors')
 
 <div class="container">
-    <h3 style="text-align: center; color: red; font-weight: bold">Exam</h3>
+    <h3 style="text-align: center; color: red; font-weight: bold">Tạo Đề Thi</h3>
 
     <form method="post" action=" {{ route('exam.store')}} " enctype="multipart/form-data">
         @csrf
@@ -21,7 +21,8 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text">Quiz</label>
                 </div>
-                <select class="custom-select" name="quiz_id">
+                <select class="custom-select" name="quiz_id" id="quiz_id">
+                    <option value="0">chon 1</option>
                     @foreach ($quizzes as $quiz)
                     <option value="{{$quiz->id}} "> {{ $quiz->title }} </option>
                     @endforeach
@@ -33,25 +34,26 @@
             <label>Tên</label>
             <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." required>
         </div>
-
-        <div class="form-group">
-            <label>Thời gian thi</label>
-            <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..." required>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Thời gian thi</label>
+                <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..."
+                    required>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Điểm</label>
+                <input type="number" name="score" class="form-control" placeholder="Nhập điểm...">
+            </div>
         </div>
-
-        <div class="form-group">
-            <label>Điểm</label>
-            <input type="number" name="score" class="form-control" placeholder="Nhập điểm...">
-        </div>
-
-        <div class="form-group">
-            <label>Ngay bat dau</label>
-            <input class="date form-control datepicker" id="start_date" type="text" name="start_date">
-        </div>
-
-        <div class="form-group">
-            <label>Ngay ket thuc</label>
-            <input class="date form-control datepicker" id="end_date" type="text" name="end_date">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Ngày mở</label>
+                <input class="date form-control datepicker" id="start_date" type="text" name="start_date">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Ngày đóng</label>
+                <input class="date form-control datepicker" id="end_date" type="text" name="end_date">
+            </div>
         </div>
 
         <div class="form-group">
@@ -98,5 +100,28 @@ function enableTableTab() {
     $("#importByFile :input").attr("disabled", true);
     $("#importByTable :input").attr("disabled", false);
 }
+</script>
+
+<script type="text/javascript">
+$('#quiz_id').change(function() {
+    var id = $(this).val();
+    var url = "/quiz/" + id + "/count/question";
+    console.log(url);
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        success: function(data) {
+            if (data) {
+                $("#importByTable").empty();
+                $.each(data, function(key, value) {
+                    $("#importByTable").append('<div class="form-group">' +
+                        '<label> Loại câu hỏi: ' + value['type'] + ' (Số câu hỏi có trong ngân hàng câu hỏi: ' + value['total_question'] + ') </label>' +
+                        '<input type="number" name="' + value['key'] +'" class="form-control" max="'+value['total_question']+'"> </div>');
+                });
+            }
+        }
+    });
+});
 </script>
 @stop

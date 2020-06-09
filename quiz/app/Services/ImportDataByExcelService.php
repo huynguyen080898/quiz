@@ -27,43 +27,69 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
 
         foreach ($rows as $row) 
         {
+            $question_type = $row['question_type'];
+            $answer_type = $row['answer_type'];
+
             $question = Question::create([
                 'quiz_id' => $this->quiz_id,
                 'title'  => $row['question'],
-                'type'   => $row['type']
-                // 'score'  => ($row['score']) ? $row['score'] : 0,
+                'question_type'   => $question_type,
+                'answer_type' => $answer_type
             ]);
 
             $question_id = $question->max('id');
             
-            $answer = Answer::create([
-                'question_id' => $question_id,
-                'title' => $row['true_answer'],
-                'correct' => true,
-            ]);
-            $answer_id = $answer->max('id');
+            if ($answer_type == 'fill_text'){
+                $arr_exam_detail =  $this->insertCorrectAnswer($row['true_answers'], $arr_exam_detail, $question_id); 
+                continue;
+            }         
 
-            array_push($arr_exam_detail,[
-                'exam_id' => $this->exam_id,
-                'question_id' => $question_id,
-                'answer_id' => $answer_id
-            ]);
+            $arr_exam_detail =  $this->insertCorrectAnswer($row['true_answers'], $arr_exam_detail, $question_id);              
+    
+            $this->insertOtherAnswer($row['other_answers'], $question_id);
+        }
 
-            if($row['type'] == 'multi_choice'){
-                $totalColumn = count($row);
-                $totalOtherAnswer = $totalColumn - 3;
+        ExamDetail::insert($arr_exam_detail);
+    }
 
-                $arr_answers = [];
+    private function insertOtherAnswer($str_answer, $question_id)
+    {
+        $arr_answers = explode("#a#", $str_answer);
+        $arr_other_answers = array_filter($arr_answers, 'strlen');
 
-                for($i = 1; $i <= $totalOtherAnswer;$i++){
-                    array_push($arr_answers,[
-                        'question_id' => $question_id,
-                        'title' => 'multi_choice'
-                    ]);                   
-                }
-                Answer::insert($arr_answers);
+        foreach ($arr_answers as $other_answer) {
+            if (!empty($other_answer)) {
+                $answer = new Answer();
+                $answer->title = $other_answer;
+                $answer->question_id = $question_id;
+                $answer->save();
             }
         }
-        ExamDetail::insert($arr_exam_detail);
+    }
+
+    private function insertCorrectAnswer($str_answer, $arr_exam_detail, $question_id)
+    {
+        $arr_answers = explode("#a#", $str_answer);
+        $arr_true_answers = array_filter($arr_answers, 'strlen');
+
+        foreach ($arr_answers as $true_answer) {
+            if (!empty($true_answer)) {
+                
+                $answer = new Answer();
+                $answer->title = $true_answer;
+                $answer->question_id = $question_id;
+                $answer->correct = true;
+                $answer->save();
+                $answer_id = $answer->max('id');
+
+                array_push($arr_exam_detail,[
+                    'exam_id' => $this->exam_id,
+                    'question_id' => $question_id,
+                    'answer_id' => $answer_id
+                ]);
+            }
+        }
+
+        return $arr_exam_detail;
     }
 }
