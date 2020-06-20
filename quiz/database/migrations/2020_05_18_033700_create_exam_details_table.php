@@ -17,7 +17,6 @@ class CreateExamDetailsTable extends Migration
             $table->id();
             $table->integer('exam_id');
             $table->integer('question_id');
-            $table->integer('answer_id');
             $table->float('score')->default(0);
             $table->timestamps();
         });

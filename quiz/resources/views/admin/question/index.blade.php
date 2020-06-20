@@ -10,10 +10,10 @@
 
 @include('notification.errors')
 
-<h3 style="text-align: center">Danh sách câu hỏi</h3>
+<h3 style="text-align: center">Danh Sách Câu Hỏi</h3>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <a href="{{ route('question.create') }}" class="btn btn-success float-right">Thêm câu hỏi</a>
+        <a href="{{ route('question.create') }}" class="btn btn-success float-right">Thêm Câu Hỏi</a>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -21,8 +21,10 @@
                 <thead>
                     <tr>
                         <th>STT</th>
+                        <th>Danh mục</th>
                         <th>Câu hỏi</th>
                         <th>Loại câu hỏi</th>
+                        <th>Loại câu trả lời</th>
                         <th>Xem câu trả lời </th>
                         <th>Actions</th>
                     </tr>
@@ -34,11 +36,14 @@
                     @foreach ($questions as $question)
                     <tr>
                         <th> {{ $i++ }} </th>
+                        <th> {{ $question->quiz_title }}</th>
                         <td> {{ $question->title }} </td>
-                        <td> {{ $question->type }} </td>
-                        <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
+                        <td> {{ $question->question_type }} </td>
+                        <td> {{ $question->answer_type }} </td>
+                        <td><a href="#">Xem câu trả lời</a></td>
+                        <td><a href="#" class="btn btn-info btn-circle"><i
                                     class="fa fas fa-edit"></i></a>
-                            <a href="{{ route('quiz.delete', $quiz->id) }}"
+                            <a href="#"
                                 onclick="return confirm('Bạn có thật sự muốn xóa?')"
                                 class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
                     </tr>

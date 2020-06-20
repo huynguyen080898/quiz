@@ -11,7 +11,6 @@ class ExamDetail extends Model
     protected $fillable = [
         'exam_id',
         'question_id',
-        'answer_id',
         'score'
     ];
 }

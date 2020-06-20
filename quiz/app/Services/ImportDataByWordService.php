@@ -10,7 +10,7 @@ use App\Models\ExamDetail;
 
 class ImportDataByWordService{
 
-    public static function importData($file,$quiz_id,$exam_id)
+    public static function importData($file,$quiz_id,$exam_id = 0)
     {
         $filePath = $file->getRealPath();
         $striped_content = '';
@@ -41,72 +41,83 @@ class ImportDataByWordService{
 
                 foreach ($arr_data as $data) {
                     
-                    if (!empty($data)) {
-                        $arr_question = explode("#a#", $data);
-
-                        $question_title = $arr_question[0];
-
-                        $question = new Question();
-                        $question->title = $question_title;
-                        $question->quiz_id = $quiz_id;
-                        $question->question_type = 'text';
-                        $question->answer_type = 'single_select';
-                        $question->save();
-
-                        $question_id = $question->max('id');
-                      
-                        $str_answers = strstr($data, "#a#");
-                        $arr_answers = explode("#a#", $str_answers);
-                        $arr_answers = array_filter($arr_answers, 'strlen');
-                        
-                        if(count($arr_answers) == 1){
-                            Question::where('id',$question_id)->update(['answer_type'=>'fill_text']);
-                        }
-
-                        $total_true_answer = 0;
-
-                        foreach ($arr_answers as $val) {
-                            if (!empty($val)) {
-                                
-                                $answer = new Answer();
-                                
-                                if (substr($val,0, 1) === '*') {
-                                    $val = trim($val);
-                                    $answer_title = substr($val,1);
-                                    $answer->title = trim($answer_title);
-                                    $answer->question_id = $question_id;
-                                    $answer->correct = true;
-                                    $answer->save();
-
-                                    $answer_id = $answer->max('id');
-
-                                    array_push($arr_exam_detail,[
-                                        'exam_id' => $exam_id,
-                                        'question_id' => $question_id,
-                                        'answer_id' => $answer_id
-                                    ]);
-
-                                    $total_true_answer += 1;
-                                    
-                                    continue;
-                                }
-
-                                $answer->title = $val;
-                                $answer->question_id = $question_id;
-                                $answer->save();
-                            }
-                        }
-
-                        if($total_true_answer > 1){
-                            Question::where('id',$question_id)->update(['answer_type'=>'multi_select']);
-                        }
-                      
+                    if (!empty($data)) {                     
+                        $arr_exam_detail = ImportDataByWordService::insertQuestion($data, $quiz_id, $exam_id, $arr_exam_detail);
                     }
                 }
-                ExamDetail::insert($arr_exam_detail);
+                if($exam_id != 0){
+                    ExamDetail::insert($arr_exam_detail);
+                }
             }
             
         }
        
+    }
+
+
+    private static function insertQuestion($data, $quiz_id, $exam_id = 0, $arr_exam_detail = []){
+        $arr_question = explode("#a#", $data);
+
+        $question_title = $arr_question[0];
+
+        $question = new Question();
+        $question->title = $question_title;
+        $question->quiz_id = $quiz_id;
+        $question->question_type = 'text';
+        $question->answer_type = 'single_select';
+        $question->save();
+
+        $question_id = $question->max('id');   
+
+        if($exam_id != 0){
+            array_push($arr_exam_detail,[
+                'exam_id' => $exam_id,
+                'question_id' => $question_id
+            ]);
+        }
+
+        $str_answers = strstr($data, "#a#");
+        $arr_answers = explode("#a#", $str_answers);
+        $arr_answers = array_filter($arr_answers, 'strlen');
+        
+        if(count($arr_answers) == 1){
+            Question::where('id',$question_id)->update(['answer_type'=>'fill_text']);
+        } 
+
+        ImportDataByWordService::insertMultipleAnswer($arr_answers,$question_id);
+
+        return $arr_exam_detail;
+    }
+
+    private static function insertMultipleAnswer($arr_answers,$question_id){
+        $total_true_answer = 0;
+
+        foreach ($arr_answers as $val) {
+            if (!empty($val)) {
+               
+                $answer = new Answer();
+                
+                if (substr($val,0, 1) === '*') {
+                    $val = trim($val);
+                    $answer_title = substr($val,1);
+                    $answer->title = trim($answer_title);
+                    $answer->question_id = $question_id;
+                    $answer->correct = true;
+                    $answer->save();
+
+                    $total_true_answer += 1;
+                    
+                    continue;
+                }
+
+                $answer->title = $val;
+                $answer->question_id = $question_id;
+                $answer->save();
+            }
+        }
+
+        if($total_true_answer > 1){
+            Question::where('id',$question_id)->update(['answer_type'=>'multi_select']);
+        }
     }
 }

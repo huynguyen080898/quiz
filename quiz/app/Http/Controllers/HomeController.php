@@ -29,11 +29,11 @@ class HomeController extends Controller
     {
         $exam_detail = ExamDetail::where('exam_id', $exam_id)
                                     ->join('questions', 'exam_details.question_id', '=', 'questions.id')
-                                    ->select('exam_details.*', 'questions.title as question_title')
+                                    ->select('exam_details.*', 'questions.title as question_title','questions.question_type','questions.answer_type')
                                     ->paginate(1);
         
         $question_id = $exam_detail[0]->question_id;
-       
+        
         $answers = Answer::where('question_id', $question_id)->get();
         
         $user_id = Auth::user()->id;//Change
@@ -45,17 +45,17 @@ class HomeController extends Controller
         
         $result = Result::where([['user_id',$user_id],['exam_id',$exam_id]])->first();
 
-        $user_answer_id = 0;
+        $user_answer = 0;
 
-        $user_answer = UserAnswer::where([['result_id',$result->id],['question_id',$question_id]])->select('user_answer_id')->first(); 
+        $user_answer = UserAnswer::where([['result_id',$result->id],['question_id',$question_id]])->select('user_answer')->get(); 
         
-        if(!empty($user_answer->user_answer_id)){
-            $user_answer_id = $user_answer->user_answer_id;
+        if(!empty($user_answer->user_answer)){
+            $user_answer = $user_answer->user_answer;
         }
         
         if ($request->ajax()) 
         {
-            return view('home.partial.quiz-detail', compact(['exam_detail','answers','user_answer_id']));
+            return view('home.partial.quiz-detail', compact(['exam_detail','answers','user_answer']));
         }
 
         $create_result_time = $result->created_at;
@@ -64,7 +64,7 @@ class HomeController extends Controller
         $exam_time = Carbon::parse($exam->time);
         $exam_time = $create_result_time->addMinutes($exam->time);
         
-        return view('home.start-quiz', compact(['exam_detail','answers','exam','exam_time','result','user_answer_id']));
+        return view('home.start-quiz', compact(['exam_detail','answers','exam','exam_time','result','user_answer']));
     }
 
 

@@ -28,7 +28,7 @@ class QuizController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
-            'fileImport' => 'required|mimes:png,jpg'
+            'fileImport' => 'required|mimes:png,jpg,jpeg'
         ],[
             'title.required' => 'Tên danh mục không được trống',
             'fileImport.required' => 'Bạn chưa chọn hình ảnh',

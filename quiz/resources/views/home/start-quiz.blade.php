@@ -224,7 +224,7 @@ function getData(page) {
 </script>
 
 <script type="text/javascript">
-function updateOrCreate() {
+function radio() {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -232,12 +232,80 @@ function updateOrCreate() {
     });
 
     $.ajax({
-        url: '{{route("user.answer")}}',
+        url: '{{route("user.answer.radio")}}',
         type: 'PUT',
         data: {
-            'user_answer_id': $('input[name=answer]:checked', '#formQuestion').val(),
+            'user_answer': $('input[name=answer]:checked', '#formQuestion').val(),
             'question_id': $('input[name=question_id]').val(),
-            'exam_id': '{{$exam->id}}',
+            'result_id': '{{$result->id}}'
+        },
+
+        success: function(data) {
+            if ((data.errors)) {
+                alert(data.errors);
+            }
+
+        }
+    });
+}
+
+function checkbox() {
+    // var answers = [];
+    // $("input[type='checkbox']").change(function(){
+    //   $.each($("input[type='checkbox']"), function(){            
+        
+    //         answers[this.value] = this.checked;
+    //   });
+     
+    // });
+    // const data = JSON.stringify(answers);
+    var answers = [];
+  
+    $("input[type='checkbox']").each( function() {
+        
+            answers[this.value] = this.checked
+       
+    });
+    // const a = answers.filter(Boolean);
+    console.log(answers);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    $.ajax({
+        url: '{{route("user.answer.checkbox")}}',
+        type: 'PUT',
+        data: {
+            'user_answers': answers,
+            'question_id': $('input[name=question_id]').val(),
+            'result_id': '{{$result->id}}'
+        },
+
+        success: function(data) {
+            if ((data.errors)) {
+                alert(data.errors);
+            }
+
+        }
+    });
+}
+
+function filltext() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: '{{route("user.answer.filltext")}}',
+        type: 'PUT',
+        data: {
+            'user_answer': $('input[name=answer]').val(),
+            'question_id': $('input[name=question_id]').val(),
             'result_id': '{{$result->id}}'
         },
 

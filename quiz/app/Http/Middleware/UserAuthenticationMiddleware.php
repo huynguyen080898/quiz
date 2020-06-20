@@ -15,9 +15,10 @@ class UserAuthenticationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->role == 'user'){
-            return $next($request);
+        if ($request->expectsJson()) {
+            return route('login');
         }
-        return redirect()->route('home.index');
+       
+        return redirect()->route('login.get');
     }
 }

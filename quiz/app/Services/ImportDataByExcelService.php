@@ -15,7 +15,7 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
     protected $quiz_id;
     protected $exam_id;
 
-    public function  __construct($quiz_id, $exam_id)
+    public function  __construct($quiz_id, $exam_id = 0)
     {
         $this->quiz_id = $quiz_id;
         $this->exam_id = $exam_id;
@@ -24,11 +24,13 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
     public function collection(Collection $rows)
     {
         $arr_exam_detail = [];
-
+        
         foreach ($rows as $row) 
         {
             $question_type = $row['question_type'];
             $answer_type = $row['answer_type'];
+
+            //insert question
 
             $question = Question::create([
                 'quiz_id' => $this->quiz_id,
@@ -38,26 +40,39 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
             ]);
 
             $question_id = $question->max('id');
-            
+          
+            if($this->exam_id != 0){
+               
+                array_push($arr_exam_detail,[
+                    'exam_id' => $this->exam_id,
+                    'question_id' => $question_id
+                ]);
+
+            }
+
             if ($answer_type == 'fill_text'){
-                $arr_exam_detail =  $this->insertCorrectAnswer($row['true_answers'], $arr_exam_detail, $question_id); 
+                 $this->insertCorrectAnswer($row['true_answers'], $question_id); 
                 continue;
             }         
 
-            $arr_exam_detail =  $this->insertCorrectAnswer($row['true_answers'], $arr_exam_detail, $question_id);              
-    
+            $this->insertCorrectAnswer($row['true_answers'], $question_id);              
+            
             $this->insertOtherAnswer($row['other_answers'], $question_id);
         }
 
-        ExamDetail::insert($arr_exam_detail);
+        if($this->exam_id != 0){
+            ExamDetail::insert($arr_exam_detail);
+        }
     }
+ 
+    // insert false answeer
 
     private function insertOtherAnswer($str_answer, $question_id)
     {
         $arr_answers = explode("#a#", $str_answer);
         $arr_other_answers = array_filter($arr_answers, 'strlen');
 
-        foreach ($arr_answers as $other_answer) {
+        foreach ($arr_other_answers as $other_answer) {
             if (!empty($other_answer)) {
                 $answer = new Answer();
                 $answer->title = $other_answer;
@@ -67,12 +82,13 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
         }
     }
 
-    private function insertCorrectAnswer($str_answer, $arr_exam_detail, $question_id)
+    //insert true answer
+    private function insertCorrectAnswer($str_answer, $question_id)
     {
         $arr_answers = explode("#a#", $str_answer);
         $arr_true_answers = array_filter($arr_answers, 'strlen');
-
-        foreach ($arr_answers as $true_answer) {
+        // dd($arr_true_answers);
+        foreach ($arr_true_answers as $true_answer) {
             if (!empty($true_answer)) {
                 
                 $answer = new Answer();
@@ -80,16 +96,11 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
                 $answer->question_id = $question_id;
                 $answer->correct = true;
                 $answer->save();
-                $answer_id = $answer->max('id');
+                // $answer_id = $answer->max('id');
 
-                array_push($arr_exam_detail,[
-                    'exam_id' => $this->exam_id,
-                    'question_id' => $question_id,
-                    'answer_id' => $answer_id
-                ]);
             }
         }
 
-        return $arr_exam_detail;
+        // return $arr_exam_detail;
     }
 }

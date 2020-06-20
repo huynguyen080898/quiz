@@ -18,7 +18,8 @@ class CreateExamsTable extends Migration
             $table->integer('quiz_id');
             $table->string('title');
             $table->integer('time');
-            $table->float('score')->default(0);
+            $table->string('image_url');
+            $table->float('score')->default(100);
             $table->string('status')->default('open');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();

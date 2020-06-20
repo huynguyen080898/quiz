@@ -22,7 +22,7 @@
                     <label class="input-group-text">Quiz</label>
                 </div>
                 <select class="custom-select" name="quiz_id" id="quiz_id">
-                    <option value="0">chon 1</option>
+                    <option value="0">--- Chọn danh mục ---</option>
                     @foreach ($quizzes as $quiz)
                     <option value="{{$quiz->id}} "> {{ $quiz->title }} </option>
                     @endforeach

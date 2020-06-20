@@ -16,7 +16,8 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::all();
+        $questions = Question::join('quizzes', 'questions.quiz_id','=','quizzes.id')->select('questions.*','quizzes.title as quiz_title')->get();
+        // $questions = Question::all();
 
         return view('admin.question.index',compact('questions'));
     }

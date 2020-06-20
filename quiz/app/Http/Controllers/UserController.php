@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function getUser($user_id){
         $user = User::find($user_id);
-        return $user;
+        return view('home.user-profile', compact('user'));
     }
 
     public function getUsers(){

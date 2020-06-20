@@ -74,6 +74,12 @@ class ExamController extends Controller
                 ]);
             }
 
+            $image_url_quiz = Quiz::where('id',$request->quiz_id)->select('image_url')->first();
+            
+            $request->merge([
+                'image_url' =>  $image_url_quiz->image_url
+            ]);
+
             $exam = Exam::create($request->all());
             $exam_id = $exam->max('id');
             $quiz_id = $request->quiz_id;

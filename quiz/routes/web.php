@@ -41,7 +41,7 @@ Route::group(['prefix' => 'exam'], function ()
         // Route::get('create/{id}', 'Admin\ExamDetailController@create')->name('examDetail.create');
         // Route::post('store/{id}', 'Admin\ExamDetailController@store')->name('examDetail.store');
         // Route::get('edit/{id}', 'Admin\ExamDetailController@edit')->name('examDetail.edit');
-        // Route::post('edit/{id}', 'Admin\ExamDetailController@update')->name('examDetail.update');
+        Route::post('update', 'ExamDetailController@update')->name('exam.detail.update');
         Route::get('destroy/{id}', 'ExamDetailController@destroy')->name('exam.detail.delete');
     });
 });
@@ -61,7 +61,7 @@ Route::group(['prefix' => 'question'], function ()
 
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', 'UserController@getUsers')->name('user.get.all');
-    Route::get('{id}', 'UserController@getUser')->name('user.get.single');
+    Route::get('{id}', 'UserController@getUser')->name('user.profile');
 
 });
     // Route::group(['prefix' => 'answer'], function () {
@@ -73,20 +73,22 @@ Route::group(['prefix' => 'user'], function () {
     //     Route::get('destroy/{id}', 'Admin\AnswerController@destroy')->name('answer.destroy');
     // });
 
-Route::group(['middleware' => 'auth.user'], function()
+Route::group(['middleware' => 'auth'], function()
 {
-    Route::get('quiz/{id}/exam','ExamController@getExampleByQuizId')->name('quiz.exam');
-
     Route::get('quiz-start/{id}','HomeController@getExamDetail')->name('quiz.start');
 
-    Route::put('user-answer','UserAnswerController@putUserAnswer')->name('user.answer');
+    Route::put('user-answer-radio','UserAnswerController@putUserAnswerRadio')->name('user.answer.radio');
+
+    Route::put('user-answer-checkbox','UserAnswerController@putUserAnswerCheckBox')->name('user.answer.checkbox');
+
+    Route::put('user-answer-filltext','UserAnswerController@putUserAnswerFillText')->name('user.answer.filltext');
 
     Route::get('result','ResultController@index')->name('result.index');
 });
 
 Route::get('/', 'HomeController@index')->name('home.index');
 
-
+Route::get('quiz/{id}/exam','ExamController@getExampleByQuizId')->name('quiz.exam');
 
 // Route::post('register','Auth\RegisterController@g')->name('register');
 // Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
@@ -102,3 +104,5 @@ Route::post('register','Auth\RegisterController@register')->name('register.post'
 
 Route::get('/redirect/{social}', 'Auth\SocialAuthController@redirect');
 Route::get('/callback/{social}', 'Auth\SocialAuthController@callback');
+
+

@@ -10,10 +10,10 @@
 
 @include('notification.errors')
 
-    <h3 style="text-align: center">Danh sách đề thi</h3>
+    <h3 style="text-align: center">Danh Sách Đề Thi</h3>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <a href="{{ route('exam.create') }}" class="btn btn-success float-right">Tạo đề thi</a>
+            <a href="{{ route('exam.create') }}" class="btn btn-success float-right">Tạo Đề Thi</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

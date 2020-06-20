@@ -17,7 +17,7 @@ class CreateUserAnswersTable extends Migration
             $table->id();
             $table->integer('result_id');
             $table->integer('question_id');
-            $table->integer('user_answer_id');
+            $table->string('user_answer');
             $table->boolean('correct')->default(false);
             $table->timestamps();
         });
