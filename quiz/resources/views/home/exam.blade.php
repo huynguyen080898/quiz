@@ -6,10 +6,10 @@
     @foreach($exams as $exam)
     <div class="col-md-3 mb-2">
         <div class="card border border-primary">
-            <img class="card-img-top p-2" src="{{ $exam->image_url}}" alt="Card image cap" width="600px" height="250px">
+            <img class="card-img-top p-2" src="{{ $exam->image_url}}" alt="Card image cap" width="600px" height="200px">
             <hr>
             <div class="card-body">
-                <h5 class="card-title text-center">{{$exam->title}}</h5>
+                <h5 class="card-title text-center font-weight-bold">{{$exam->title}}</h5>
                
                 <div class="text-center">
                     <a href="{{ route('quiz.start',$exam->id) }}"

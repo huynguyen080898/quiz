@@ -50,8 +50,8 @@ class ExamDetailController extends Controller
     {
         $exam_detail = ExamDetail::where('exam_id',$id)
                                     ->join('questions', 'exam_details.question_id', '=', 'questions.id')
-                                    ->join('answers','exam_details.answer_id','=', 'answers.id')
-                                    ->select('exam_details.*', 'questions.title as question_title','answers.title as answer_title')
+                                    // ->join('answers','exam_details.answer_id','=', 'answers.id')
+                                    ->select('exam_details.*', 'questions.title as question_title')
                                     ->get();
         // dd($exam_detail);
         return view('admin.exam.detail', compact('exam_detail'));
@@ -79,7 +79,7 @@ class ExamDetailController extends Controller
     public function update(Request $request)
     {
         // dd($request->all());
-        ExamDetail::where([['exam_id',$request->exam_id],['question_id',$request->question_id],['answer_id',$request->answer_id]])
+        ExamDetail::where([['exam_id',$request->exam_id],['question_id',$request->question_id]])
         ->update(['score' => $request->score]);
 
         $exam_detail_score = ExamDetail::where('exam_id',$request->exam_id)->select('score')->get();

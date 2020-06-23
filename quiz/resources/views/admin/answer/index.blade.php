@@ -9,26 +9,15 @@
 @include('notification.messages')
 
 @include('notification.errors')
-
-    <h3 style="text-align: center">Danh Sách Đề Thi</h3>
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <a href="{{ route('exam.create') }}" class="btn btn-success float-right">Tạo Đề Thi</a>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Danh mục</th>
-                            <th>Tên đề thi</th>                            
-                            <th>Thời gian thi (phút)</th>
-                            <th>Ngày mở</th>
-                            <th>Ngày đóng</th>
-                            <th>Trạng thái</th>
-                            <th>Xem chi tiết</th>
-                            <th>Xem thống kê</th>
+                            <th>Câu trả lời</th>
+                            <th>Correct</th>                            
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -36,23 +25,18 @@
                         @php
                         $i = 1;
                         @endphp
-                        @foreach ($exams as $exam)
+                        @foreach ($answers as $answer)
                         <tr>
                             <th> {{ $i++ }} </th>
-                            <td> {{ $exam->quiz_title }} </td>
-                            <td> {{ $exam->title }} </td>                            
-                            <td> {{ $exam->time }} (phut)</td>
-                            <td> {{ $exam->start_date}}</td>
-                            <td> {{ $exam->end_date}}</td>
-                            <td> {{ $exam->status }}</td>
-                            <td><a href="{{route('exam.detail', $exam->id)}}">Xem chi tiết</a></td>
-                            <td><a href="{{route('exam.statistical', $exam->id)}}">Xem thống kê</a></td>
-                            <td><a href="{{ route('exam.edit', $exam->id) }}" class="btn btn-info btn-circle"><i
+                            <td> {{ $answer->title }} </td>                            
+                            <td> {{ ($answer->correct) ? 'Đúng' : 'Sai' }} </td>
+                            <td><a href="#" class="btn btn-info btn-circle"><i
                                         class="fa fas fa-edit"></i></a>
-                                <a href="{{ route('exam.delete', $exam->id) }}"
+                                <a href="#"
                                     onclick="return confirm('Bạn có thật sự muốn xóa?')"
                                     class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a>
                             </td>
+                          
                         </tr>
                         @endforeach
                     </tbody>

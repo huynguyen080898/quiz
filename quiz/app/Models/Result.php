@@ -13,6 +13,7 @@ class Result extends Model
         'exam_id',
         'score',
         'total_true_answer',
-        'total_question'
+        'total_question',
+        'status'
     ];
 }

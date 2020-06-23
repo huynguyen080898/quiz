@@ -13,10 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => 'admin'], function ()
+{
+    Route::get('/', 'AdminController@index')->name('admin.index')->middleware('admin');
+    Route::get('/login', 'Auth\LoginController@getLoginAdmin')->name('admin.login.get');
+    Route::post('/login', 'Auth\LoginController@postLoginAdmin')->name('admin.login.post');
+   
 
-Route::get('admin', 'AdminController@index')->name('admin.index');
+});
 
-Route::group(['prefix' => 'quiz'], function ()
+Route::group(['prefix' => 'quiz', 'middleware' => 'auth'], function ()
 {
     Route::get('index', 'QuizController@index')->name('quiz.index');
     Route::get('create', 'QuizController@create')->name('quiz.create');
@@ -27,7 +33,7 @@ Route::group(['prefix' => 'quiz'], function ()
     Route::get('{id}/count/question','QuizController@countQuestionByQuizID')->name('quiz.count.question');
 });
 
-Route::group(['prefix' => 'exam'], function ()
+Route::group(['prefix' => 'exam', 'middleware' => 'auth'], function ()
 {
     Route::get('index', 'ExamController@index')->name('exam.index');
     Route::get('create', 'ExamController@create')->name('exam.create');
@@ -44,36 +50,36 @@ Route::group(['prefix' => 'exam'], function ()
         Route::post('update', 'ExamDetailController@update')->name('exam.detail.update');
         Route::get('destroy/{id}', 'ExamDetailController@destroy')->name('exam.detail.delete');
     });
+
+    Route::get('{exam_id}/statistical','ExamController@getStatistics')->name('exam.statistical')->middleware('admin');
 });
 
 
-Route::group(['prefix' => 'question'], function ()
+Route::group(['prefix' => 'question','middleware' => 'auth'], function ()
 {
     Route::get('index', 'QuestionController@index')->name('question.index');
     Route::get('create', 'QuestionController@create')->name('question.create');
-    Route::post('store', 'QuestionController@store')->name('question.store');
     Route::get('edit/{id}', 'QuestionController@edit')->name('question.edit');
-    Route::post('update/{id}', 'QuestionController@update')->name('question.update');
     Route::get('destroy/{id}', 'QuestionController@destroy')->name('question.delete');
-
+    Route::get('answer/{id}', 'QuestionController@getAnswerByQuestionId')->name('question.answer');
     Route::get('count','QuestionController@count')->name('question.count');
+
+    Route::post('update/{id}', 'QuestionController@update')->name('question.update');
+    Route::post('store', 'QuestionController@store')->name('question.store');   
 });
 
 Route::group(['prefix' => 'user'], function () {
-    Route::get('/', 'UserController@getUsers')->name('user.get.all');
-    Route::get('{id}', 'UserController@getUser')->name('user.profile');
-
+    Route::get('/all', 'UserController@getUsers')->name('user.get.all')->middleware('admin');
+    Route::post('/', 'UserController@putUser')->name('user.update')->middleware('user');
+    Route::get('/', 'UserController@getUser')->name('user.profile')->middleware('user');
+   
 });
-    // Route::group(['prefix' => 'answer'], function () {
-    //     Route::get('index/{id}', 'Admin\AnswerController@index')->name('answer.index');
-    //     Route::get('create/{id}', 'Admin\AnswerController@create')->name('answer.create');
-    //     Route::post('store/{id}', 'Admin\AnswerController@store')->name('answer.store');
-    //     Route::get('edit/{id}', 'Admin\AnswerController@edit')->name('answer.edit');
-    //     Route::post('edit/{id}', 'Admin\AnswerController@update')->name('answer.update');
-    //     Route::get('destroy/{id}', 'Admin\AnswerController@destroy')->name('answer.destroy');
-    // });
 
-Route::group(['middleware' => 'auth'], function()
+Route::group(['prefix' => 'answer','middleware' => 'auth'], function () {
+    Route::get('index/{id}', 'AnswerController@index')->name('answer.index');
+});
+
+Route::group(['middleware' => 'user'], function()
 {
     Route::get('quiz-start/{id}','HomeController@getExamDetail')->name('quiz.start');
 
@@ -83,16 +89,16 @@ Route::group(['middleware' => 'auth'], function()
 
     Route::put('user-answer-filltext','UserAnswerController@putUserAnswerFillText')->name('user.answer.filltext');
 
-    Route::get('result','ResultController@index')->name('result.index');
+    Route::get('result/{id}','ResultController@getResult')->name('result');
+
+    Route::get('result-detail/{id}','ResultController@getResultDetail')->name('result.detail');
+
+    Route::get('history','ResultController@getResults')->name('history');
 });
 
 Route::get('/', 'HomeController@index')->name('home.index');
 
 Route::get('quiz/{id}/exam','ExamController@getExampleByQuizId')->name('quiz.exam');
-
-// Route::post('register','Auth\RegisterController@g')->name('register');
-// Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
-
 
 Route::get('login','Auth\LoginController@index')->name('login.get');
 Route::post('login','Auth\LoginController@login')->name('login.post');

@@ -51,7 +51,7 @@ class ImportDataByExcelService implements ToCollection, WithHeadingRow{
             }
 
             if ($answer_type == 'fill_text'){
-                 $this->insertCorrectAnswer($row['true_answers'], $question_id); 
+                $this->insertCorrectAnswer($row['true_answers'], $question_id); 
                 continue;
             }         
 

@@ -29,21 +29,16 @@
                 </select>
             </div>
         </div>
-
-        <div class="form-group">
-            <label>Tên</label>
-            <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." required>
-        </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label>Thời gian thi</label>
-                <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..."
-                    required>
+                <label>Tên</label>
+                <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." required>
             </div>
             <div class="form-group col-md-6">
-                <label>Điểm</label>
-                <input type="number" name="score" class="form-control" placeholder="Nhập điểm...">
+                <label>Thời gian thi</label>
+                <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..." required>
             </div>
+           
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">

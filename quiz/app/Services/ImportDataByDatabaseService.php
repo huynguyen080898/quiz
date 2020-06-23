@@ -48,8 +48,7 @@ class ImportDataByDatabaseService{
             foreach ($data as $value){
                 array_push($arr_exam_detail,[
                     'exam_id' => $exam_id,
-                    'question_id' => $value['question_id'],
-                    'answer_id' => $value['answer_id']
+                    'question_id' => $value['question_id']
                 ]);
                 // dd($value);
             }

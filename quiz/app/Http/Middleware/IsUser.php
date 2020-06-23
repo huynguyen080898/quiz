@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
-class UserAuthenticationMiddleware
+class IsUser
 {
     /**
      * Handle an incoming request.
@@ -15,10 +16,14 @@ class UserAuthenticationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->expectsJson()) {
-            return route('login');
-        }
-       
+        if (Auth::user())
+        {
+            if(Auth::user()->role == 'user'){
+                return $next($request);
+            }
+            
+            Auth::logout();
+        } 
         return redirect()->route('login.get');
     }
 }

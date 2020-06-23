@@ -1,10 +1,18 @@
 @extends('admin.layout')
+<!-- @section('title', 'Quiz') -->
+@section('styles')
+<link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+@stop
+
 @section('content')
 
+@include('notification.messages')
+
+@include('notification.errors')
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+    <h1 class="h3 mb-0 text-gray-800">Thống Kê</h1>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
 </div>
 
 <!-- Content Row -->
@@ -16,8 +24,8 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số user</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Số người thi</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{$results->count()}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -83,5 +91,44 @@
     </div>
 </div>
 
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ và tên</th>
+                        <th>Số câu đúng</th>
+                        <th>Điểm</th>
+                        <th>Ngày thi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                    $i = 1;
+                    @endphp
+                    @foreach ($results as $result)
+                    <tr>
+                        <th> {{ $i++ }} </th>
+                        <td> {{ $result->user_name }} </td>
+                        <td> {{ $result->total_true_answer }} </td>
+                        <td> {{ $result->score }}</td>
+                        <td> {{ $result->created_at }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
+@stop
+@section('scripts')
+<!-- Page level plugins -->
+<script src="vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="js/demo/datatables-demo.js"></script>
 @stop

@@ -35,9 +35,9 @@
                         <th> {{ $i++ }} </th>
                         <td> {{ $user->name }} </td>
                         <td> {{$user->email}}  </td>
-                        <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
+                        <td><a href="#" class="btn btn-info btn-circle"><i
                                     class="fa fas fa-edit"></i></a>
-                            <a href="{{ route('quiz.delete', $quiz->id) }}"
+                            <a href="#"
                                 onclick="return confirm('Bạn có thật sự muốn xóa?')"
                                 class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
                     </tr>

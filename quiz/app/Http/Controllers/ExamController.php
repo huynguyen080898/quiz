@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use Exception;
 use Carbon\Carbon;
 use App\Models\Exam;
 use App\Models\Quiz;
+use App\Models\Result;
 use App\Models\Question;
-use App\Models\ExamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -62,26 +64,32 @@ class ExamController extends Controller
                 'title' => 'required|max:255',
                 'time' => 'required|numeric'
             ],[
-                'quiz_id.required' => 'Ban chua chon danh muc',
-                'title.required' => 'Ban chua nhap ten bai thi',
-                'time.required' => 'Ban chua nhap thoi gian thi',
-                'time.numeric' => 'thoi gian thi phai la so'
+                'quiz_id.required' => 'Bạn chưa chọn danh mục',
+                'title.required' => 'Bạn chưa nhập tên bài thi',
+                'time.required' => 'Bạn chưa nhập thời gian thi',
+                'time.numeric' => 'Thời gian thi phải là số'
             ]);
 
-            if($request->start_date == null){
-                $request->merge([
-                    'start_date' => Carbon::now()
-                ]);
+            $start_date = DateTime::createFromFormat('Y-m-d', $request->start_date);
+
+            if( $start_date == null){
+                $start_date = Carbon::now();
             }
 
             $image_url_quiz = Quiz::where('id',$request->quiz_id)->select('image_url')->first();
-            
-            $request->merge([
-                'image_url' =>  $image_url_quiz->image_url
-            ]);
+            $image_url =  $image_url_quiz->image_url;
+            // dd($start_date);
+            $exam = new Exam();
+            $exam->quiz_id = $request->quiz_id;
+            $exam->title = $request->title;
+            $exam->time = $request->time;
+            $exam->start_date = $start_date;
+            // $exam->end_date = !empty($request->end_date) ? DateTime::createFromFormat('Y-m-d',$request->end_date) : null;
+            // $exam->score = $request->score;
+            $exam->image_url = $image_url;
+            $exam->save();
 
-            $exam = Exam::create($request->all());
-            $exam_id = $exam->max('id');
+            $exam_id = $exam->id;
             $quiz_id = $request->quiz_id;
             
             if($request->hasFile('fileImport')){
@@ -89,8 +97,8 @@ class ExamController extends Controller
                 $request->validate([
                     'fileImport'=>'required|mimes:docx,xlsx,csv,tsv,ods,xls,slk,xml,html,gnumeric',
                 ],[
-                    'fileImport.required' => 'Ban chua chon file',
-                    'fileImport.mimes' => 'File khong dung dinh dang',
+                    'fileImport.required' => 'Bạn chưa chọn file',
+                    'fileImport.mimes' => 'File không đúng định dạng',
                 ]);
 
                 $file = $request->file('fileImport');
@@ -139,7 +147,8 @@ class ExamController extends Controller
      */
     public function edit($id)
     {
-        //
+        $exam = Exam::find($id);
+        return view('admin.exam.edit',compact('exam'));
     }
 
     /**
@@ -151,7 +160,14 @@ class ExamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = Exam::find($id);
+        $data->title = $request->title;
+        $data->time = $request->time;
+        // $data->score = $request->score;
+        // $data->status = $request->status;
+        // $data->start_date = Carbon::parse($request->start_date);
+        $data->save();
+        return redirect()->back()->with('messages', 'Lưu thành công');
     }
 
     /**
@@ -167,8 +183,19 @@ class ExamController extends Controller
         return back()->with('messages', 'Xóa thành công');
     }
 
-    public function getExampleByQuizId($id){
+    public function getExampleByQuizId($id)
+    {
         $exams = Exam::where('quiz_id',$id)->get();
         return view('home.exam',compact('exams'));
+    }
+
+    public function getStatistics($exam_id)
+    {
+        $results = Result::where([['exam_id', $exam_id],['status','close']])
+        ->join('users', 'users.id', '=', 'results.user_id')
+        ->select('users.name as user_name','results.*')
+        ->orderBy('score', 'desc')->get();
+
+        return view('admin.statistical.index',compact('results'));
     }
 }

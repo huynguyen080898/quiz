@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         session(['link' => url()->previous()]);
         
         if(Auth::check()){
@@ -27,6 +28,19 @@ class LoginController extends Controller
             return redirect(session('link'));
         } 
             
+        return redirect()->back()->with('messages', 'Tài khoản hoặc mật khẩu không chính xác');
+    }
+
+    public function getLoginAdmin()
+    {    
+        return view('admin.auth.login');
+    }
+
+    public function postLoginAdmin(Request $request)
+    {    
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->route('admin.index');
+        } 
         return redirect()->back()->with('messages', 'Tài khoản hoặc mật khẩu không chính xác');
     }
 }

@@ -15,15 +15,15 @@
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet"> -->
     <link href="dist/css/home.css" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     @yield('styles')
     <style>
-    body {
-        margin: 0;
-        padding: 0
-    }
+        body {
+            margin: 0;
+            padding: 0
+        }
     </style>
 </head>
 <!-- style="overflow-x: hidden;" -->
@@ -36,13 +36,11 @@
                     <a class="text-muted" href="#">hiepsiit</a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="blog-header-logo text-dark" href="{{route('home.index')}}">QUIZ</a>
+                    <a class="blog-header-logo text-dark" href="{{route('home.index')}}">QUIZ - TEST</a>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
                     <a class="text-muted" href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="mx-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3">
                             <circle cx="10.5" cy="10.5" r="7.5"></circle>
                             <line x1="21" y1="21" x2="15.8" y2="15.8"></line>
                         </svg>
@@ -51,25 +49,24 @@
                     <ul class="nav page-navigation">
                         <li class="nav-item dropdown">
                             <a class="nav-link" data-toggle="dropdown" id="navbarDropdown" href="#">
-                                Xin Chào: {{Auth::user()->name}}
+                                <img class="rounded-circle" src="{{Auth::user()->avatar_url}}" width="50" height="50px"> Xin Chào: {{Auth::user()->name}}
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
-                                aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{route('user.profile',Auth::user()->id)}}">
-                                    Profile
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{route('user.profile')}}">
+                                    Hồ sơ
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    Test History
+                                <a class="dropdown-item" href="{{route('history')}}">
+                                    Lịch sử bài thi
                                 </a>
                                 <a class="dropdown-item" href="{{route('logout')}}">
-                                    Logout
+                                    Đăng xuất
                                 </a>
                             </div>
                         </li>
                     </ul>
                     @else
-                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login.get') }}">Login</a>
-                    <a class="btn btn-sm btn-outline-secondary" href="{{route('register.get')}}">Sign up</a>
+                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login.get') }}">Đăng nhập</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{route('register.get')}}">Đăng ký</a>
                     @endif
                 </div>
             </div>
@@ -79,8 +76,7 @@
             <div class="nav-scroller">
                 <nav class="nav d-flex justify-content-between">
                     @foreach($quizzes as $quiz)
-                    <a class="p-2 text-muted" href="{{route('quiz.exam', $quiz->id)}}"><span
-                            class="font-weight-bold">{{ $quiz->title }}</span></a>
+                    <a class="p-2 text-muted" href="{{route('quiz.exam', $quiz->id)}}"><span class="font-weight-bold">{{ $quiz->title }}</span></a>
                     @endforeach
                 </nav>
             </div>
@@ -94,11 +90,14 @@
 
 
     <footer class="blog-footer">
-        <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a
-                href="https://twitter.com/mdo">@mdo</a>.</p>
-        <p>
-            <a href="#">Back to top</a>
-        </p>
+        <div class="fixed-bottom  bg-white py-3 px-5">
+            <a href="http://hiepsiit.com" class="mx-2">Hiệp sĩ IT</a>
+            <a href="http://learning.hiepsiit.com" class="mx-2">Học tập</a>
+            <a href="http://qna.hiepsiit.com" class="mx-2">Hỏi Đáp</a>
+            <a href="https://sharecode.hiepsiit.com" class="mx-2">Chia sẻ mã nguồn</a>
+            <a href="https://sharefile.hiepsiit.com" class="mx-2">Chia sẻ file</a>
+
+        </div>
     </footer>
 
     <!-- Bootstrap core JavaScript
@@ -110,13 +109,22 @@
     <script src="vendor/holder.min.js"></script>
 
     <script>
-    Holder.addTheme('thumb', {
-        bg: '#55595c',
-        fg: '#eceeef',
-        text: 'Thumbnail'
-    });
+        Holder.addTheme('thumb', {
+            bg: '#55595c',
+            fg: '#eceeef',
+            text: 'Thumbnail'
+        });
     </script>
     @yield('scripts')
+    <script>
+        var msg = '{{Session::get('
+        alert ')}}';
+        var exist = '{{Session::has('
+        alert ')}}';
+        if (exist) {
+            alert(msg);
+        }
+    </script>
 </body>
 
 </html>

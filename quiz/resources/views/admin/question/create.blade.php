@@ -7,8 +7,8 @@
 @include('notification.errors')
 
 <div class="container">
-    <h3 style="text-align: center; color: red; font-weight: bold">Danh Mục</h3>
-    <form method="post" action=" {{ route('question.store')}} ">
+    <h3 style="text-align: center; color: red; font-weight: bold">Thêm Câu Hỏi</h3>
+    <form method="post" action=" {{ route('question.store')}} " enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <div class="input-group mb-3 form-group">
@@ -16,6 +16,7 @@
                     <label class="input-group-text">Quiz</label>
                 </div>
                 <select class="custom-select" name="quiz_id" id="quiz_id">
+                    <option value="0">--- Chọn danh mục ---</option>
                     @foreach ($quizzes as $quiz)
                     <option value="{{$quiz->id}} "> {{ $quiz->title }} </option>
                     @endforeach
@@ -24,15 +25,9 @@
         </div>
 
         <div class="form-group">
-            <label>Câu hỏi</label>
-            <input type="text" name="title" class="form-control" placeholder="Nhập câu hỏi..." required>
-        </div>
-
-        <div class="form-group">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" onclick="enableFileTab()" href="#importByFile">Thêm câu hỏi từ
-                        file</a>
+                    <a class="nav-link active" data-toggle="tab" onclick="enableFileTab()" href="#importByFile">Thêm câu hỏi từ file</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" onclick="enableTableTab()" href="#importByTable">Thêm câu hỏi thủ công</a>
@@ -48,20 +43,10 @@
                     </div>
                 </div>
                 <div id="importByTable" class="container tab-pane fade"><br>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Loại câu hỏi</label>
-                            <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..." required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Điểm</label>
-                            <input type="number" name="score" class="form-control" placeholder="Nhập điểm...">
-                        </div>
-                    </div>
+        
                 </div>
             </div>
         </div>
-
         <button type="submit" class="btn btn-block btn-success">Thêm</button>
     </form>
 </div>
@@ -79,5 +64,11 @@
         $("#importByTable :input").attr("disabled", false);
     }
 </script>
-
+<script type="text/javascript">
+// Add the following code if you want the name of the file appear on select
+$(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
 @stop

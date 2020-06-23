@@ -23,7 +23,6 @@
                     <tr>
                         <th>STT</th>
                         <th>Câu hỏi</th>
-                        <th>Câu trả lời</th>
                         <th>Điểm</th>
                         <th>Action</th>
                     </tr>
@@ -36,7 +35,6 @@
                     <tr>
                         <th> {{ $i++ }} </th>
                         <td> {{ $value->question_title }} </td>
-                        <td> {{ $value->answer_title}} </td>
                         <td> {{ $value->score }} </td>
                         <td>
                             <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#updateQuestionScore" data-examid="{{$value->exam_id}}" data-questionid="{{$value->question_id}}" data-answerid="{{$value->answer_id}}"> <i class="fa fas fa-edit"></i></button>
@@ -98,11 +96,11 @@
         var button = $(event.relatedTarget)
         var exam_id = button.data('examid')
         var question_id = button.data('questionid')
-        var answer_id = button.data('answerid')
+     
         var modal = $(this)
         modal.find('#exam_id').val(exam_id)
         modal.find('#question_id').val(question_id)
-        modal.find('#answer_id').val(answer_id)
+        
     })
 </script>
 @stop

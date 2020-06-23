@@ -40,7 +40,7 @@
                         <td> {{ $question->title }} </td>
                         <td> {{ $question->question_type }} </td>
                         <td> {{ $question->answer_type }} </td>
-                        <td><a href="#">Xem câu trả lời</a></td>
+                        <td><a href="{{route('question.answer', $question->id)}}">Xem câu trả lời</a></td>
                         <td><a href="#" class="btn btn-info btn-circle"><i
                                     class="fa fas fa-edit"></i></a>
                             <a href="#"

@@ -45,17 +45,25 @@ class HomeController extends Controller
         
         $result = Result::where([['user_id',$user_id],['exam_id',$exam_id]])->first();
 
-        $user_answer = 0;
-
-        $user_answer = UserAnswer::where([['result_id',$result->id],['question_id',$question_id]])->select('user_answer')->get(); 
-        
-        if(!empty($user_answer->user_answer)){
-            $user_answer = $user_answer->user_answer;
+        if($result->status == 'close'){
+            return redirect()->back()->with('alert', 'Bạn đã hoàn thành bài thi');
         }
-        
+
+        $arr_user_answers = [];
+
+        $user_answer = UserAnswer::where([['result_id',$result->id],['question_id',$question_id]])->select('user_answer')->get()->toArray(); 
+      
+        if(!empty($user_answer)){
+            $i = 0;
+           foreach ($user_answer as $value){
+                $arr_user_answers[$i] = $value['user_answer'];
+                $i ++;
+           }
+        }
+        // dd($arr_user_answers);
         if ($request->ajax()) 
         {
-            return view('home.partial.quiz-detail', compact(['exam_detail','answers','user_answer']));
+            return view('home.partial.quiz-detail', compact(['exam_detail','answers','arr_user_answers']));
         }
 
         $create_result_time = $result->created_at;
@@ -64,7 +72,7 @@ class HomeController extends Controller
         $exam_time = Carbon::parse($exam->time);
         $exam_time = $create_result_time->addMinutes($exam->time);
         
-        return view('home.start-quiz', compact(['exam_detail','answers','exam','exam_time','result','user_answer']));
+        return view('home.start-quiz', compact(['exam_detail','answers','exam','exam_time','result','arr_user_answers']));
     }
 
 

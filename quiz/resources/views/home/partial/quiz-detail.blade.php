@@ -15,7 +15,7 @@
             @foreach($answers as $answer)
                 <li>
                     <label>               
-                        <input type="radio" name="answer" value="{{$answer->id}}" onclick="radio();changeColor({{$exam_detail->currentPage()}});" {{($answer->id == $user_answer) ? 'checked' : '' }} />
+                        <input type="radio" name="answer" value="{{$answer->id}}" onclick="radio();changeColor({{$exam_detail->currentPage()}});" @if(in_array($answer->id, $arr_user_answers)) checked @endif/>
                         {{$answer->title}}
                     </label>
                 </li>
@@ -24,13 +24,13 @@
             @foreach($answers as $answer)
                 <li>
                     <label>               
-                    <input type="checkbox" name="answer[]" value="{{$answer->id}}" onclick="checkbox();changeColor({{$exam_detail->currentPage()}});" {{($answer->id == $user_answer) ? 'checked' : '' }} />
+                    <input type="checkbox" name="answer[]" value="{{$answer->id}}" onclick="checkbox();changeColor({{$exam_detail->currentPage()}});" @if(in_array($answer->id, $arr_user_answers)) checked @endif />
                     {{$answer->title}}
                     </label>
                 </li>
             @endforeach
         @else
-            <input type="text" name="answer" onchange="filltext();changeColor({{$exam_detail->currentPage()}});" @if($user_answer) value="{{$user_answer}}" @endif> 
+            <input type="text" name="answer" onchange="filltext();changeColor({{$exam_detail->currentPage()}});" @if(!empty($arr_user_answers)) value="{{$arr_user_answers[0]}}" @endif> 
         @endif
     </ul>
     @endforeach

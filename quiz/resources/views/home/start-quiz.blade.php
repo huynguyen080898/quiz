@@ -183,7 +183,7 @@ function getData(page) {
 
         var totalPages = "{{$exam_detail -> total()}}";
         if (page == totalPages) {
-            document.getElementById("btnResult").href = "{{route('result.index',['result_id'=>$result->id])}}";
+            document.getElementById("btnResult").href = "{{route('result',$result->id)}}";
         }
 
     }).fail(function(jqXHR, ajaxOptions, thrownError) {
@@ -217,7 +217,7 @@ function getData(page) {
         if (distance < 0) {
             clearInterval(x);
             document.getElementById("demo").innerHTML = "Het Gio";
-            window.location.assign("{{route('result.index',['result_id'=>$result->id])}}");
+            window.location.assign("{{route('result',$result->id)}}");
             return false;
         }
     }, 1000);
@@ -250,23 +250,12 @@ function radio() {
 }
 
 function checkbox() {
-    // var answers = [];
-    // $("input[type='checkbox']").change(function(){
-    //   $.each($("input[type='checkbox']"), function(){            
-        
-    //         answers[this.value] = this.checked;
-    //   });
-     
-    // });
-    // const data = JSON.stringify(answers);
     var answers = [];
   
     $("input[type='checkbox']").each( function() {
-        
-            answers[this.value] = this.checked
-       
+        answers[this.value] = this.checked
     });
-    // const a = answers.filter(Boolean);
+   
     console.log(answers);
 
     $.ajaxSetup({

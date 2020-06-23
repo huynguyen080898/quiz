@@ -121,10 +121,28 @@ class QuizController extends Controller
         ],[
             'title.required' => 'Tên danh mục không được trống',
         ]);
+        $data = [];
+        $data['title'] = $request->title;
+         
+        if($request->hasFile('fileImport')){
 
-        $quiz = Quiz::find($id);
-        $quiz->update($request->all());
-        return redirect()->route('quiz.index')->with('messages', 'Lưu thành công');
+            $request->validate([
+                'fileImport' => 'required|mimes:png,jpg,jpeg'
+            ],[
+                'fileImport.required' => 'Bạn chưa chọn hình ảnh',
+                'fileImport.mimes' => 'Ảnh không đúng định dạng '
+            ]);
+    
+            $image_quiz = Storage::disk('s3')->put('quiz-images', $request->fileImport, 'r');
+    
+            $image_url = Storage::disk('s3')->url($image_quiz);
+    
+            $data['image_url'] =  $image_url;
+        }
+       
+        Quiz::where('id', $id)->update($data);
+        
+        return redirect()->back()->with('messages', 'Lưu thành công');
     }
 
     public function destroy($id)
