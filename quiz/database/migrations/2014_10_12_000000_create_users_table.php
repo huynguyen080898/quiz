@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('avatar_url')->nullable();
+            $table->string('avatar_url')->default('https://i2.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png?resize=256%2C256&quality=100&ssl=1');
             $table->string('password');
             // $table->boolean('active')->default(false);
             $table->string('role')->default('user')->nullable();

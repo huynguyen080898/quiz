@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Exam;
+use App\Models\Quiz;
+use App\Models\User;
 use App\Models\Result;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,10 +19,16 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        $data = [];
+        $data['user_count'] = User::count();
+        $data['exam_count'] = Exam::count();
+        $data['question_count'] = Question::count();
+        $data['quiz_count'] = Quiz::count();
+        // dd($data);
+        return view('admin.index', compact('data'));
     }
 
-   
+
     /**
      * Show the form for creating a new resource.
      *
@@ -36,9 +46,7 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-    
-    }
+    { }
 
     /**
      * Display the specified resource.

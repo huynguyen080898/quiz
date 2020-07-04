@@ -1,4 +1,5 @@
 @extends('home.layout')
+@section('title','Quiz | Làm bài thi')
 @section('styles')
 <style>
     .privew {
@@ -131,9 +132,10 @@
 @section('content')
 
 <div class="privew bg-light">
-    <div class="row d-flex">
-        <p class="ml-auto p-2 m-2">Thoi gian con lai: <span class="text-danger mr-3" id="demo"></span></p>
+    <div class="d-flex flex-row-reverse">
+        <div class="p-2 m-2 border border-primary rounded">Thời gian còn lại: <span class="text-danger mr-3" id="demo"></span></div>
     </div>
+
     <div id="ajax-container" class="questionsBox">
         @include('home.partial.quiz-detail')
     </div>
@@ -141,7 +143,7 @@
     <div class="text-center mt-3">
         @for($i = 1; $i <= $exam_detail->total(); $i++)
             <a class="ajax btn btn-secondary my-2 mx-1" id="page{{$i}}" href="{{route('quiz.start',$exam->id)}}?page={{$i}}">{{$i}}</a>
-        @endfor
+            @endfor
     </div>
 </div>
 
@@ -149,47 +151,48 @@
 
 @section('scripts')
 <script type="text/javascript">
-$(window).on('hashchange', function() {
-    if (window.location.hash) {
-        var page = window.location.hash.replace('#', '');
-        if (page == Number.NaN || page <= 0) {
-            return false;
-        } else {
+    $(window).on('hashchange', function() {
+        if (window.location.hash) {
+            var page = window.location.hash.replace('#', '');
+            if (page == Number.NaN || page <= 0) {
+                return false;
+            } else {
+                getData(page);
+            }
+        }
+    });
+
+    $(document).ready(function() {
+
+        $(document).on('click', '.ajax', function(event) {
+            event.preventDefault();
+            var page = $(this).attr('href').split('page=')[1];
             getData(page);
-        }
+        });
+
+    });
+
+    function changeColor(page_current) {
+        document.getElementById('page' + page_current).style.backgroundColor = "blue";
     }
-});
 
-$(document).ready(function() {
+    function getData(page) {
+        $.ajax({
+            url: '{{ route("quiz.start",$exam->id) }}' + '?page=' + page,
+            type: "get",
+            datatype: "html"
+        }).done(function(data) {
+            $("#ajax-container").empty().html(data);
 
-    $(document).on('click', '.ajax', function(event) {
-        event.preventDefault();
-        var page = $(this).attr('href').split('page=')[1];  
-        getData(page);
-    });
+            var totalPages = "{{$exam_detail -> total()}}";
+            if (page == totalPages) {
+                document.getElementById("btnResult").href = "{{route('result',$result->id)}}";
+            }
 
-});
-function changeColor(page_current)
-{
-    document.getElementById('page'+page_current).style.backgroundColor = "blue";
-}
-function getData(page) {
-    $.ajax({
-        url: '{{ route("quiz.start",$exam->id) }}' + '?page=' + page,
-        type: "get",
-        datatype: "html"
-    }).done(function(data) {
-        $("#ajax-container").empty().html(data);
-
-        var totalPages = "{{$exam_detail -> total()}}";
-        if (page == totalPages) {
-            document.getElementById("btnResult").href = "{{route('result',$result->id)}}";
-        }
-
-    }).fail(function(jqXHR, ajaxOptions, thrownError) {
-        alert(jqXHR + ajaxOptions + thrownError);
-    });
-}
+        }).fail(function(jqXHR, ajaxOptions, thrownError) {
+            alert(jqXHR + ajaxOptions + thrownError);
+        });
+    }
 </script>
 
 <script type="text/javascript">
@@ -211,7 +214,7 @@ function getData(page) {
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         // Output the result in an element with id="demo"
-        document.getElementById("demo").innerHTML = minutes + " phut " + seconds + "s ";
+        document.getElementById("demo").innerHTML = minutes + ":" + seconds + " giây ";
 
         // If the count down is over, write some text 
         if (distance < 0) {
@@ -224,87 +227,87 @@ function getData(page) {
 </script>
 
 <script type="text/javascript">
-function radio() {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    $.ajax({
-        url: '{{route("user.answer.radio")}}',
-        type: 'PUT',
-        data: {
-            'user_answer': $('input[name=answer]:checked', '#formQuestion').val(),
-            'question_id': $('input[name=question_id]').val(),
-            'result_id': '{{$result->id}}'
-        },
-
-        success: function(data) {
-            if ((data.errors)) {
-                alert(data.errors);
+    function radio() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
 
-        }
-    });
-}
+        $.ajax({
+            url: '{{route("user.answer.radio")}}',
+            type: 'PUT',
+            data: {
+                'user_answer': $('input[name=answer]:checked', '#formQuestion').val(),
+                'question_id': $('input[name=question_id]').val(),
+                'result_id': '{{$result->id}}'
+            },
 
-function checkbox() {
-    var answers = [];
-  
-    $("input[type='checkbox']").each( function() {
-        answers[this.value] = this.checked
-    });
-   
-    console.log(answers);
+            success: function(data) {
+                if ((data.errors)) {
+                    alert(data.errors);
+                }
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    
-    $.ajax({
-        url: '{{route("user.answer.checkbox")}}',
-        type: 'PUT',
-        data: {
-            'user_answers': answers,
-            'question_id': $('input[name=question_id]').val(),
-            'result_id': '{{$result->id}}'
-        },
-
-        success: function(data) {
-            if ((data.errors)) {
-                alert(data.errors);
             }
+        });
+    }
 
-        }
-    });
-}
+    function checkbox() {
+        var answers = [];
 
-function filltext() {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+        $("input[type='checkbox']").each(function() {
+            answers[this.value] = this.checked
+        });
 
-    $.ajax({
-        url: '{{route("user.answer.filltext")}}',
-        type: 'PUT',
-        data: {
-            'user_answer': $('input[name=answer]').val(),
-            'question_id': $('input[name=question_id]').val(),
-            'result_id': '{{$result->id}}'
-        },
+        console.log(answers);
 
-        success: function(data) {
-            if ((data.errors)) {
-                alert(data.errors);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
 
-        }
-    });
-}
+        $.ajax({
+            url: '{{route("user.answer.checkbox")}}',
+            type: 'PUT',
+            data: {
+                'user_answers': answers,
+                'question_id': $('input[name=question_id]').val(),
+                'result_id': '{{$result->id}}'
+            },
+
+            success: function(data) {
+                if ((data.errors)) {
+                    alert(data.errors);
+                }
+
+            }
+        });
+    }
+
+    function filltext() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: '{{route("user.answer.filltext")}}',
+            type: 'PUT',
+            data: {
+                'user_answer': $('input[name=answer]').val(),
+                'question_id': $('input[name=question_id]').val(),
+                'result_id': '{{$result->id}}'
+            },
+
+            success: function(data) {
+                if ((data.errors)) {
+                    alert(data.errors);
+                }
+
+            }
+        });
+    }
 </script>
 @stop

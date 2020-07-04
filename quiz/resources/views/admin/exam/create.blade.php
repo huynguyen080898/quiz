@@ -32,11 +32,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Tên</label>
-                <input type="text" name="title" class="form-control" placeholder="Nhập tên de thi..." required>
+                <input type="text" name="title" class="form-control" placeholder="Nhập tên đề thi..." required>
             </div>
             <div class="form-group col-md-6">
-                <label>Thời gian thi</label>
-                <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phut)..." required>
+                <label>Thời gian thi (phút)</label>
+                <input type="number" name="time" class="form-control" placeholder="Nhập thời gian thi (phút)..." required>
             </div>
            
         </div>
@@ -50,7 +50,12 @@
                 <input class="date form-control datepicker" id="end_date" type="text" name="end_date">
             </div>
         </div>
-
+        
+        <div class="form-group">
+            <label>Mô tả</label>
+            <input class="form-control" name="description" type="text" multiple>
+        </div>
+        
         <div class="form-group">
             @include('admin.tab.import')
         </div>

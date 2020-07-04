@@ -1,21 +1,19 @@
 @extends('home.layout')
-@section('title','Exam')
+@section('title','Quiz | Đề thi')
 
 @section('content')
 <div class="row">
     @foreach($exams as $exam)
     <div class="col-md-3 mb-2">
         <div class="card border border-primary">
-            <img class="card-img-top p-2" src="{{ $exam->image_url}}" alt="Card image cap" width="600px" height="200px">
-            <hr>
+            <img class="card-img-top" src="{{ $exam->image_url}}" alt="Card image cap" height="200px">
             <div class="card-body">
-                <h5 class="card-title text-center font-weight-bold">{{$exam->title}}</h5>
-               
+                <h5 class="card-title text-center">{{$exam->title}}</h5>
+                <p class="card-text">{{$exam->description}}</p>
                 <div class="text-center">
-                    <a href="{{ route('quiz.start',$exam->id) }}"
-                        onclick="return confirm('Bạn có muon bat dau bai thi')" class="btn btn-primary">Start Quiz</a>
+                    <a href="{{ route('quiz.start',$exam->id) }}" onclick="return confirm('Bạn có muốn bắt đầu bài thi')" class="btn btn-primary">Làm bài</a>
                 </div>
-                <!-- <p class="card-text text-center"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+
             </div>
         </div>
     </div>

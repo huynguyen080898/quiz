@@ -33,18 +33,18 @@
         <header class="blog-header py-3">
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
-                    <a class="text-muted" href="#">hiepsiit</a>
+                    <a class="text-muted" href="https://hiepsiit.com/">hiepsiit</a>
                 </div>
                 <div class="col-4 text-center">
                     <a class="blog-header-logo text-dark" href="{{route('home.index')}}">QUIZ - TEST</a>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
-                    <a class="text-muted" href="#">
+                    <!-- <a class="text-muted" href="#">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3">
                             <circle cx="10.5" cy="10.5" r="7.5"></circle>
                             <line x1="21" y1="21" x2="15.8" y2="15.8"></line>
                         </svg>
-                    </a>
+                    </a> -->
                     @if(Auth::check())
                     <ul class="nav page-navigation">
                         <li class="nav-item dropdown">
@@ -65,7 +65,7 @@
                         </li>
                     </ul>
                     @else
-                    <a class="btn btn-sm btn-outline-secondary mr-2" href="{{route('login.get') }}">Đăng nhập</a>
+                    <a class="btn btn-sm btn-outline-primary mr-2" href="{{route('login.get') }}">Đăng nhập</a>
                     <a class="btn btn-sm btn-outline-secondary" href="{{route('register.get')}}">Đăng ký</a>
                     @endif
                 </div>
@@ -73,14 +73,12 @@
         </header>
 
         <div class="container">
-            <div class="nav-scroller">
-                <nav class="nav d-flex justify-content-between">
-                    @foreach($quizzes as $quiz)
-                    <a class="p-2 text-muted" href="{{route('quiz.exam', $quiz->id)}}"><span class="font-weight-bold">{{ $quiz->title }}</span></a>
-                    @endforeach
-                </nav>
+            <div class="row h-100 justify-content-center align-items-center">
+                @foreach($quizzes as $quiz)
+                <a href="{{route('quiz.exam', $quiz->id)}}"><span class=" text-primary font-weight-bold" style="font-size:30px">{{ $quiz->title }}</span></a>
+                @endforeach
             </div>
-            <hr class="border border-primary rounded-circle ">
+            <hr class="border border-primary rounded-circle">
         </div>
 
     </div>
@@ -117,10 +115,8 @@
     </script>
     @yield('scripts')
     <script>
-        var msg = '{{Session::get('
-        alert ')}}';
-        var exist = '{{Session::has('
-        alert ')}}';
+        var msg = '{{Session::get("alert")}}';
+        var exist = '{{Session::has("alert")}}';
         if (exist) {
             alert(msg);
         }

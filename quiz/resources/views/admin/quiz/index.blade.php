@@ -39,11 +39,8 @@
                                 <image src="{{ $quiz->image_url}}" width="200" height="100px"></image>
                             </a>
                         </td>
-                        <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i
-                                    class="fa fas fa-edit"></i></a>
-                            <a href="{{ route('quiz.delete', $quiz->id) }}"
-                                onclick="return confirm('Bạn có thật sự muốn xóa?')"
-                                class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
+                        <td><a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-info btn-circle"><i class="fa fas fa-edit"></i></a>
+                            <a href="{{ route('quiz.delete', $quiz->id) }}" onclick="return confirm('Bạn có thật sự muốn xóa?')" class="btn btn-danger btn-circle"><i class="fa fas fa-trash"></i></a></td>
                     </tr>
                     @endforeach
                 </tbody>

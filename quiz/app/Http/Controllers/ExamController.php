@@ -19,51 +19,35 @@ use App\Services\ImportDataByDatabaseService;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $exams = Exam::join('quizzes', 'exams.quiz_id','=','quizzes.id')->select('exams.*','quizzes.title as quiz_title')->get();
+        $exams = Exam::join('quizzes', 'exams.quiz_id', '=', 'quizzes.id')->select('exams.*', 'quizzes.title as quiz_title')->get();
         // dd($exams);
         return view('admin.exam.index', compact('exams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $quizzes = Quiz::all();
 
-        $total_question = Question::select('quiz_id',DB::raw('count(*) as total_question'))->groupBy('quiz_id')->get();
-        
+        $total_question = Question::select('quiz_id', DB::raw('count(*) as total_question'))->groupBy('quiz_id')->get();
+
         // $groupByQuizID = collect($total_question)->groupBy('quiz_id')->toArray();
-        
-        return view('admin.exam.create',compact('quizzes','total_question'));
+
+        return view('admin.exam.create', compact('quizzes', 'total_question'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-       
+
         DB::beginTransaction();
         try {
-            
+
             $request->validate([
-                'quiz_id'=>'required',
+                'quiz_id' => 'required',
                 'title' => 'required|max:255',
                 'time' => 'required|numeric'
-            ],[
+            ], [
                 'quiz_id.required' => 'Bạn chưa chọn danh mục',
                 'title.required' => 'Bạn chưa nhập tên bài thi',
                 'time.required' => 'Bạn chưa nhập thời gian thi',
@@ -72,11 +56,11 @@ class ExamController extends Controller
 
             $start_date = DateTime::createFromFormat('Y-m-d', $request->start_date);
 
-            if( $start_date == null){
+            if ($start_date == null) {
                 $start_date = Carbon::now();
             }
 
-            $image_url_quiz = Quiz::where('id',$request->quiz_id)->select('image_url')->first();
+            $image_url_quiz = Quiz::where('id', $request->quiz_id)->select('image_url')->first();
             $image_url =  $image_url_quiz->image_url;
             // dd($start_date);
             $exam = new Exam();
@@ -84,6 +68,7 @@ class ExamController extends Controller
             $exam->title = $request->title;
             $exam->time = $request->time;
             $exam->start_date = $start_date;
+            $exam->description = $request->description;
             // $exam->end_date = !empty($request->end_date) ? DateTime::createFromFormat('Y-m-d',$request->end_date) : null;
             // $exam->score = $request->score;
             $exam->image_url = $image_url;
@@ -91,12 +76,12 @@ class ExamController extends Controller
 
             $exam_id = $exam->id;
             $quiz_id = $request->quiz_id;
-            
-            if($request->hasFile('fileImport')){
+
+            if ($request->hasFile('fileImport')) {
 
                 $request->validate([
-                    'fileImport'=>'required|mimes:docx,xlsx,csv,tsv,ods,xls,slk,xml,html,gnumeric',
-                ],[
+                    'fileImport' => 'required|mimes:docx,xlsx,csv,tsv,ods,xls,slk,xml,html,gnumeric',
+                ], [
                     'fileImport.required' => 'Bạn chưa chọn file',
                     'fileImport.mimes' => 'File không đúng định dạng',
                 ]);
@@ -104,60 +89,37 @@ class ExamController extends Controller
                 $file = $request->file('fileImport');
 
                 $extension = $file->getClientOriginalExtension();
-    
-				if($extension == 'docx'){
-                    ImportDataByWordService::importData($file,$quiz_id,$exam_id);
-                }
-                else{
-                    Excel::import(new ImportDataByExcelService($quiz_id,$exam_id), $file);
+
+                if ($extension == 'docx') {
+                    ImportDataByWordService::importData($file, $quiz_id, $exam_id);
+                } else {
+                    Excel::import(new ImportDataByExcelService($quiz_id, $exam_id), $file);
                 }
 
                 DB::commit();
                 return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
             }
-            
+
             ImportDataByDatabaseService::importData($exam_id, $request);
             DB::commit();
             return redirect()->route('exam.create')->with('messages', 'Thêm thành công');
-            
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
-
-       
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         $exam = Exam::find($id);
-        return view('admin.exam.edit',compact('exam'));
+        return view('admin.exam.edit', compact('exam'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $data = Exam::find($id);
@@ -170,12 +132,6 @@ class ExamController extends Controller
         return redirect()->back()->with('messages', 'Lưu thành công');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $exam = Exam::find($id);
@@ -185,17 +141,22 @@ class ExamController extends Controller
 
     public function getExampleByQuizId($id)
     {
-        $exams = Exam::where('quiz_id',$id)->get();
-        return view('home.exam',compact('exams'));
+        $exams = Exam::where('quiz_id', $id)->get();
+        return view('home.exam', compact('exams'));
     }
 
     public function getStatistics($exam_id)
     {
-        $results = Result::where([['exam_id', $exam_id],['status','close']])
-        ->join('users', 'users.id', '=', 'results.user_id')
-        ->select('users.name as user_name','results.*')
-        ->orderBy('score', 'desc')->get();
-
-        return view('admin.statistical.index',compact('results'));
+        $results = Result::where([['exam_id', $exam_id], ['status', 'close']])
+            ->join('users', 'users.id', '=', 'results.user_id')
+            ->select('users.name as user_name', 'results.*')
+            ->orderBy('score', 'desc')->get();
+        $total_user_pass = 0;
+        foreach ($results as $result) {
+            if ($result->total_true_answer >= $result->total_question / 2) {
+                $total_user_pass += 1;
+            }
+        }
+        return view('admin.statistical.index', compact(['results', 'total_user_pass']));
     }
 }

@@ -13,6 +13,7 @@ class Exam extends Model
         'quiz_id',
         'time',
         'score',
+        'description',
         'image_url',
         'status',
         'start_date',

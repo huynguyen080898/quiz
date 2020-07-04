@@ -21,6 +21,7 @@ class CreateExamsTable extends Migration
             $table->string('image_url');
             $table->float('score')->default(100);
             $table->string('status')->default('open');
+            $table->string('description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
