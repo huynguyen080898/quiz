@@ -9,6 +9,11 @@ class Quiz extends Model
     protected $table = 'quizzes';
 
     protected $fillable = [
-        'title','image_url'
+        'title', 'image_url'
     ];
+
+    public function exams()
+    {
+        return $this->hasMany('App\Models\Exam', 'quiz_id', 'id');
+    }
 }

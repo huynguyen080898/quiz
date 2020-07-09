@@ -8,8 +8,15 @@
         <div class="card border border-primary">
             <img class="card-img-top" src="{{ $exam->image_url}}" alt="Card image cap" height="200px">
             <div class="card-body">
-                <h5 class="card-title text-center">{{$exam->title}}</h5>
-                <p class="card-text">{{$exam->description}}</p>
+                <h5 class="card-title">{{$exam->title}}</h5>
+                <p style="font-size: 14px;">
+                    <span class="text-muted">Ngày thi:</span> {{$exam->start_date}}
+                </p>
+                <p style="font-size: 14px;">
+                    <span class="text-muted">Giờ thi:</span> {{$exam->start_time}}
+                </p>
+                <p style="font-size: 14px;">
+                    <span class="text-muted"> Khóa dự thi:</span> {{($exam->key) ? 'Có' : 'Không'}}</p>
                 <div class="text-center">
                     <a href="{{ route('quiz.start',$exam->id) }}" onclick="return confirm('Bạn có muốn bắt đầu bài thi')" class="btn btn-primary">Làm bài</a>
                 </div>

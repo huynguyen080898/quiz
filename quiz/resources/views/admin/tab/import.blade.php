@@ -13,11 +13,11 @@
 <div class="tab-content">
     <div id="importByFile" class="container tab-pane active"><br>
         <div class="custom-file">
-            <input type="file" class="custom-file-input importByFile" name="fileImport" required>
+            <input type="file" class="custom-file-input importByFile" name="fileImport">
             <label class="custom-file-label">Choose file</label>
         </div>
     </div>
     <div id="importByTable" class="container tab-pane fade"><br>
-        
+
     </div>
 </div>

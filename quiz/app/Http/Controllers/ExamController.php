@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use DateTime;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Exam;
@@ -11,6 +10,7 @@ use App\Models\Result;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\ExportDataService;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\ImportDataByWordService;
@@ -39,38 +39,49 @@ class ExamController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'quiz_id' => 'bail|required',
+            'title' => 'required|max:255',
+            // 'time' => 'required|numeric',
+            'key' => 'max:5'
+        ], [
+            'quiz_id.required' => 'Bạn chưa chọn danh mục',
+            'title.required' => 'Bạn chưa nhập tên bài thi',
+            // 'time.required' => 'Bạn chưa nhập thời gian thi',
+            'time.numeric' => 'Thời gian thi phải là số',
+            'key.max' => 'Khoa bai thi toi da 5 ky tu'
+        ]);
+        // dd($request->start_date);
+        $start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->toDateString();
+        // dd($start_date);
+        $start_date_format = date('Y-m-d', strtotime($start_date));
+        // dd($start_date_format);
+        if ($request->start_date == null) {
+            $start_date = Carbon::now()->toDateString();
+        }
+        $end_date = Carbon::createFromFormat('d/m/Y', $request->end_date)->toDateString();
+        $end_date_format = date('Y-m-d', strtotime($end_date));
+
+        if ($request->end_date == null) {
+            $end_date = null;
+        }
+
+        $image_url_quiz = Quiz::where('id', $request->quiz_id)->select('image_url')->first();
+        $image_url =  $image_url_quiz->image_url;
 
         DB::beginTransaction();
         try {
 
-            $request->validate([
-                'quiz_id' => 'required',
-                'title' => 'required|max:255',
-                'time' => 'required|numeric'
-            ], [
-                'quiz_id.required' => 'Bạn chưa chọn danh mục',
-                'title.required' => 'Bạn chưa nhập tên bài thi',
-                'time.required' => 'Bạn chưa nhập thời gian thi',
-                'time.numeric' => 'Thời gian thi phải là số'
-            ]);
-
-            $start_date = DateTime::createFromFormat('Y-m-d', $request->start_date);
-
-            if ($start_date == null) {
-                $start_date = Carbon::now();
-            }
-
-            $image_url_quiz = Quiz::where('id', $request->quiz_id)->select('image_url')->first();
-            $image_url =  $image_url_quiz->image_url;
-            // dd($start_date);
             $exam = new Exam();
             $exam->quiz_id = $request->quiz_id;
             $exam->title = $request->title;
             $exam->time = $request->time;
-            $exam->start_date = $start_date;
             $exam->description = $request->description;
-            // $exam->end_date = !empty($request->end_date) ? DateTime::createFromFormat('Y-m-d',$request->end_date) : null;
-            // $exam->score = $request->score;
+            $exam->start_date = $start_date_format;
+            $exam->start_time = $request->start_time;
+            $exam->end_date = $end_date_format;
+            $exam->end_time = $request->end_time;
+            $exam->key = $request->key;
             $exam->image_url = $image_url;
             $exam->save();
 
@@ -157,6 +168,7 @@ class ExamController extends Controller
                 $total_user_pass += 1;
             }
         }
-        return view('admin.statistical.index', compact(['results', 'total_user_pass']));
+        // dd($results->toArray());
+        return view('admin.statistical.index', compact(['results', 'total_user_pass', 'exam_id']));
     }
 }

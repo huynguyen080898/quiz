@@ -21,6 +21,7 @@ class CreateResultsTable extends Migration
             $table->integer('total_question')->default(0);
             $table->float('score')->default(100);
             $table->string('status')->default('open');
+            $table->string('exam_key')->nullable();
             $table->timestamps();
         });
     }

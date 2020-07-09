@@ -14,9 +14,18 @@ class Exam extends Model
         'time',
         'score',
         'description',
-        'image_url',
         'status',
+        'key',
+        'image_url',
         'start_date',
+        'start_time',
         'end_date',
+        'end_time',
+        'exam_key'
     ];
+
+    public function quiz()
+    {
+        return $this->belongsTo('App\Models\Quiz', 'quiz_id', 'id');
+    }
 }
